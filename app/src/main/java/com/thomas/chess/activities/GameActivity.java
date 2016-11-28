@@ -104,12 +104,10 @@ public class GameActivity extends Activity {
         mPossibleMoves.clear();
     }
 
-    public Piece choosePromotionPiece() {
+    public void choosePromotionPiece(Move move) {
         PromotionDialog dialog = new PromotionDialog(this);
+        dialog.setMove(move);
         dialog.show();
-
-        //TODO block until result
-        return dialog.getPromotionPiece();
     }
 
     public Game getGame() {

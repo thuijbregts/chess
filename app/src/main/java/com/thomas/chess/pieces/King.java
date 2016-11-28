@@ -19,12 +19,14 @@ public class King extends Piece {
         ArrayList<Move> possibleMoves = new ArrayList<>();
 
         Square[][] board = mGame.getBoard().getSquares();
+        Square[][] castlingBoard = board;
         Square square;
 
         int row = mSquare.getRow();
         int column = mSquare.getColumn();
 
         if (mColor == Utils.BLACK) {
+            castlingBoard = Board.horizontalMirror(board);
             board = Board.rotate(board);
             row = (Utils.ROWS-1) - mSquare.getRow();
             column = (Utils.COLUMNS-1) - mSquare.getColumn();
@@ -55,19 +57,19 @@ public class King extends Piece {
         }
         if (!verification) {
             Move move;
-            if (canCastlingRight(board)) {
+            if (canCastlingRight(castlingBoard)) {
                 move = new Move(Utils.MOVE_TYPE_CASTLING,
                         mSquare,
-                        board[0][7]);
+                        castlingBoard[0][7]);
                 possibleMoves.add(move);
-                move.setCastling(board[0][6], board[0][5]);
+                move.setCastling(castlingBoard[0][6], castlingBoard[0][5]);
             }
-            if (canCastlingLeft(board)) {
+            if (canCastlingLeft(castlingBoard)) {
                 move = new Move(Utils.MOVE_TYPE_CASTLING,
                         mSquare,
-                        board[0][0]);
+                        castlingBoard[0][0]);
                 possibleMoves.add(move);
-                move.setCastling(board[0][2], board[0][3]);
+                move.setCastling(castlingBoard[0][2], castlingBoard[0][3]);
 
             }
             removeCheckMoves(possibleMoves);
@@ -85,7 +87,7 @@ public class King extends Piece {
         if (board[0][7].getPiece().getMovements() != 0) {
             return false;
         }
-        if (!board[0][5].isEmpty() && !board[0][6].isEmpty()) {
+        if (!board[0][5].isEmpty() || !board[0][6].isEmpty()) {
             return false;
         }
         if (isSquareControlled(board[0][5]) || isSquareControlled(board[0][6])) {
@@ -104,7 +106,7 @@ public class King extends Piece {
         if (board[0][0].getPiece().getMovements() != 0) {
             return false;
         }
-        if (!board[0][1].isEmpty() && !board[0][2].isEmpty() && !board[0][3].isEmpty()) {
+        if (!board[0][1].isEmpty() || !board[0][2].isEmpty() || !board[0][3].isEmpty()) {
             return false;
         }
         if (isSquareControlled(board[0][1]) || isSquareControlled(board[0][2]) || isSquareControlled(board[0][3])) {

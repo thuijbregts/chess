@@ -51,6 +51,17 @@ public class Game {
     public void executeMove(Move move) {
         move.make();
         mMoves.add(move);
+        if (move.getMoveType() == Utils.MOVE_TYPE_PROMOTION) {
+            promotion = true;
+            ArrayList<Piece> alivePieces = mCurrentPlayer.getAlivePieces();
+            for (int i = 0; i < alivePieces.size(); i++) {
+                if (alivePieces.get(i).equals(move.getPromotedPawn())) {
+                    alivePieces.set(i, move.getPromotedPiece());
+                    break;
+                }
+            }
+        }
+
         mCurrentPlayer = (mPlayers[0].equals(mCurrentPlayer) ? mPlayers[1] : mPlayers[0]);
 
         Piece deadPiece = move.getDeadPiece();
@@ -63,10 +74,6 @@ public class Game {
                     break;
                 }
             }
-        }
-
-        if (move.getMoveType() == Utils.MOVE_TYPE_PROMOTION) {
-            promotion = true;
         }
 
         updateGameStatus();

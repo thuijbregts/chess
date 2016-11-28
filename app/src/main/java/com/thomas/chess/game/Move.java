@@ -76,6 +76,14 @@ public class Move {
         return mMoveType;
     }
 
+    public Piece getPromotedPawn() {
+        return mPromotedPawn;
+    }
+
+    public Piece getPromotedPiece() {
+        return mPromotedPiece;
+    }
+
     public Square getDestinationSquare() {
         return mDestinationSquare;
     }

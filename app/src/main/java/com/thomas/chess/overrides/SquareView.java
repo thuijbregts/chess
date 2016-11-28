@@ -2,7 +2,6 @@ package com.thomas.chess.overrides;
 
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -55,12 +54,11 @@ public class SquareView extends ImageView implements View.OnClickListener {
         Move move = mGameActivity.getMoveForSquare(square);
         if (move != null) {
             if (move.getMoveType() == Utils.MOVE_TYPE_PROMOTION) {
-                Piece promotionPiece = mGameActivity.choosePromotionPiece();
-                move.setPromotion(promotionPiece);
-                Log.d("tag", "" + promotionPiece);
+                mGameActivity.choosePromotionPiece(move);
+            } else {
+                mGameActivity.getGame().executeMove(move);
+                mGameActivity.clearSelection();
             }
-            mGameActivity.getGame().executeMove(move);
-            mGameActivity.clearSelection();
         } else {
             checkSquareValidity(square);
         }
