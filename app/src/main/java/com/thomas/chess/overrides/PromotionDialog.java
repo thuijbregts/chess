@@ -3,6 +3,7 @@ package com.thomas.chess.overrides;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import com.thomas.chess.R;
 import com.thomas.chess.activities.GameActivity;
 import com.thomas.chess.game.Game;
+import com.thomas.chess.game.Move;
 import com.thomas.chess.pieces.Bishop;
 import com.thomas.chess.pieces.Knight;
 import com.thomas.chess.pieces.Piece;
@@ -21,6 +23,7 @@ public class PromotionDialog extends Dialog {
 
     private GameActivity mGameActivity;
     private Piece mPromotionPiece;
+    private Move mMove;
 
     public PromotionDialog(GameActivity gameActivity) {
         super(gameActivity);
@@ -29,6 +32,15 @@ public class PromotionDialog extends Dialog {
         setContentView(R.layout.promotion_dialog);
         setCancelable(false);
 
+        setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                mMove.setPromotion(mPromotionPiece);
+                mGameActivity.getGame().executeMove(mMove);
+                mGameActivity.clearSelection();
+                mGameActivity.updateGameView();
+            }
+        });
         initializeComponents();
     }
 
@@ -74,7 +86,7 @@ public class PromotionDialog extends Dialog {
         });
     }
 
-    public Piece getPromotionPiece() {
-        return mPromotionPiece;
+    public void setMove(Move move) {
+        mMove = move;
     }
 }

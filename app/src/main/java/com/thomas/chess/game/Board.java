@@ -137,4 +137,14 @@ public class Board {
         }
         return rotatedBoard;
     }
+
+    public static Square[][] horizontalMirror(Square[][] board) {
+        Square[][] mirroredBoard = new Square[8][8];
+        for (int i = 0; i < Utils.ROWS; i++) {
+            for (int j = 0; j < Utils.COLUMNS; j++) {
+                mirroredBoard[(Utils.ROWS-1)-i][j] = board[i][j];
+            }
+        }
+        return mirroredBoard;
+    }
 }

@@ -55,7 +55,7 @@ public class Pawn extends Piece {
             }
         }
         if (mMovements == 0) {
-            if (board[row+2][column].isEmpty()) {
+            if (board[row+2][column].isEmpty() && board[row+1][column].isEmpty()) {
                 possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
                         mSquare,
                         board[row+2][column]));
