@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:gravity="center"
     android:background="@color/main_background"
     tools:context=".activities.MainActivity">
@@ -16,4 +17,11 @@
     </LinearLayout>
 
 
+    <TextView
+        android:id="@+id/game_status"
+        android:layout_marginTop="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:textColor="@android:color/white"/>
 </LinearLayout>

@@ -10,19 +10,19 @@ import java.util.ArrayList;
 
 public class Queen extends Piece {
 
-    public Queen(int color, Game game) {
-        super(color, game);
+    public Queen(int color, Square square, Game game) {
+        super(color, square, game);
     }
 
     @Override
-    public ArrayList<Move> getMoves(Square currentSquare) {
+    public ArrayList<Move> getMoves(boolean verification) {
         ArrayList<Move> possibleMoves = new ArrayList<>();
 
-        Rook rook = new Rook(mColor, mGame);
-        possibleMoves.addAll(rook.getMoves(currentSquare));
+        Rook rook = new Rook(mColor, mSquare, mGame);
+        possibleMoves.addAll(rook.getMoves(verification));
 
-        Bishop bishop = new Bishop(mColor, mGame);
-        possibleMoves.addAll(bishop.getMoves(currentSquare));
+        Bishop bishop = new Bishop(mColor, mSquare, mGame);
+        possibleMoves.addAll(bishop.getMoves(verification));
 
         return possibleMoves;
     }

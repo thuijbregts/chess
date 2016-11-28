@@ -13,9 +13,14 @@ public class Game {
     private Player[] mPlayers;
     private Player mCurrentPlayer;
 
-    private ArrayList<Piece> mAlivePieces;
-    private ArrayList<Piece> mDeadPieces;
     private ArrayList<Move> mMoves;
+
+    private boolean promotion;
+    private boolean check;
+    private boolean checkmate;
+    private boolean stalemate;
+    private boolean draw;
+    private boolean drawPossible;
 
     public Game(int gameType) {
         mGameType = gameType;
@@ -24,12 +29,8 @@ public class Game {
 
     public void initializeGame() {
         mBoard = new Board(this);
-        mAlivePieces = new ArrayList<>();
-        mDeadPieces = new ArrayList<>();
         mMoves = new ArrayList<>();
         mPlayers = new Player[2];
-
-        mBoard.placePieces(mAlivePieces);
 
         switch (mGameType) {
             case Utils.GAME_SOLO:
@@ -39,31 +40,79 @@ public class Game {
             case Utils.GAME_ONLINE:
                 break;
         }
+
+        mBoard.placePieces();
     }
 
     public Board getBoard() {
         return mBoard;
     }
 
-    public void makeMove(Move move) {
+    public void executeMove(Move move) {
         move.make();
         mMoves.add(move);
         mCurrentPlayer = (mPlayers[0].equals(mCurrentPlayer) ? mPlayers[1] : mPlayers[0]);
 
         Piece deadPiece = move.getDeadPiece();
         if (deadPiece != null) {
-            mDeadPieces.add(deadPiece);
-            for (int i = 0; i < mAlivePieces.size(); i++) {
-                if (mAlivePieces.get(i).equals(deadPiece)) {
-                    mAlivePieces.remove(i);
+            mCurrentPlayer.getDeadPieces().add(deadPiece);
+            ArrayList<Piece> alivePieces = mCurrentPlayer.getAlivePieces();
+            for (int i = 0; i < alivePieces.size(); i++) {
+                if (alivePieces.get(i).equals(deadPiece)) {
+                    alivePieces.remove(i);
                     break;
                 }
             }
         }
+
+        if (move.getMoveType() == Utils.MOVE_TYPE_PROMOTION) {
+            promotion = true;
+        }
+
+        updateGameStatus();
+    }
+
+    private void updateGameStatus() {
+        check = isInCheck();
+        checkmate = false;
+        stalemate = false;
+        draw = false;
+
+        boolean hasNoLegalMoves = hasNoLegalMove();
+
+        if (check) {
+            checkmate = hasNoLegalMoves;
+        } else {
+            stalemate = hasNoLegalMoves;
+        }
+    }
+
+    private boolean isInCheck() {
+        ArrayList<Piece> opponentPieces = getOpponent(mCurrentPlayer.getColor()).getAlivePieces();
+        for (Piece piece : opponentPieces) {
+            if (piece.hasCheck()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasNoLegalMove() {
+        ArrayList<Piece> myPieces = mCurrentPlayer.getAlivePieces();
+        for (Piece piece : myPieces) {
+            if (!piece.getMoves(false).isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public Player[] getPlayers() {
         return mPlayers;
+    }
+
+    public Player getOpponent(int color) {
+        return (mPlayers[0].getColor() == color ? mPlayers[1] : mPlayers[0]);
     }
 
     public Player getCurrentPlayer() {
@@ -72,5 +121,25 @@ public class Game {
 
     public ArrayList<Move> getMoves() {
         return mMoves;
+    }
+
+    public boolean isCheck() {
+        return check;
+    }
+
+    public boolean isCheckmate() {
+        return checkmate;
+    }
+
+    public boolean isDraw() {
+        return draw;
+    }
+
+    public boolean isStalemate() {
+        return stalemate;
+    }
+
+    public boolean isPromotion() {
+        return promotion;
     }
 }

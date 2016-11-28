@@ -10,24 +10,24 @@ import java.util.ArrayList;
 
 public class Knight extends Piece {
 
-    public Knight(int color, Game game) {
-        super(color, game);
+    public Knight(int color, Square square, Game game) {
+        super(color, square, game);
     }
 
     @Override
-    public ArrayList<Move> getMoves(Square currentSquare) {
+    public ArrayList<Move> getMoves(boolean verification) {
         ArrayList<Move> possibleMoves = new ArrayList<>();
 
         Square[][] board = mGame.getBoard().getSquares();
         Square square;
 
-        int row = currentSquare.getRow();
-        int column = currentSquare.getColumn();
+        int row = mSquare.getRow();
+        int column = mSquare.getColumn();
 
         if (mColor == Utils.BLACK) {
             board = Board.rotate(board);
-            row = (Utils.ROWS-1) - currentSquare.getRow();
-            column = (Utils.COLUMNS-1) - currentSquare.getColumn();
+            row = (Utils.ROWS-1) - mSquare.getRow();
+            column = (Utils.COLUMNS-1) - mSquare.getColumn();
         }
 
         if (row < Utils.ROWS-1) {
@@ -35,12 +35,12 @@ public class Knight extends Piece {
                 square = board[row+1][column-2];
                 if (square.isEmpty()) {
                     possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
-                            currentSquare,
+                            mSquare,
                             square));
                 } else {
                     if (square.getPiece().getColor() != mColor) {
                         possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
-                                currentSquare,
+                                mSquare,
                                 square));
                     }
                 }
@@ -50,12 +50,12 @@ public class Knight extends Piece {
                 square = board[row+1][column+2];
                 if (square.isEmpty()) {
                     possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
-                            currentSquare,
+                            mSquare,
                             square));
                 } else {
                     if (square.getPiece().getColor() != mColor) {
                         possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
-                                currentSquare,
+                                mSquare,
                                 square));
                     }
                 }
@@ -67,12 +67,12 @@ public class Knight extends Piece {
                 square = board[row+2][column-1];
                 if (square.isEmpty()) {
                     possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
-                            currentSquare,
+                            mSquare,
                             square));
                 } else {
                     if (square.getPiece().getColor() != mColor) {
                         possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
-                                currentSquare,
+                                mSquare,
                                 square));
                     }
                 }
@@ -82,12 +82,12 @@ public class Knight extends Piece {
                 square = board[row+2][column+1];
                 if (square.isEmpty()) {
                     possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
-                            currentSquare,
+                            mSquare,
                             square));
                 } else {
                     if (square.getPiece().getColor() != mColor) {
                         possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
-                                currentSquare,
+                                mSquare,
                                 square));
                     }
                 }
@@ -99,12 +99,12 @@ public class Knight extends Piece {
                 square = board[row-1][column-2];
                 if (square.isEmpty()) {
                     possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
-                            currentSquare,
+                            mSquare,
                             square));
                 } else {
                     if (square.getPiece().getColor() != mColor) {
                         possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
-                                currentSquare,
+                                mSquare,
                                 square));
                     }
                 }
@@ -114,12 +114,12 @@ public class Knight extends Piece {
                 square = board[row-1][column+2];
                 if (square.isEmpty()) {
                     possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
-                            currentSquare,
+                            mSquare,
                             square));
                 } else {
                     if (square.getPiece().getColor() != mColor) {
                         possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
-                                currentSquare,
+                                mSquare,
                                 square));
                     }
                 }
@@ -131,12 +131,12 @@ public class Knight extends Piece {
                 square = board[row-2][column-1];
                 if (square.isEmpty()) {
                     possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
-                            currentSquare,
+                            mSquare,
                             square));
                 } else {
                     if (square.getPiece().getColor() != mColor) {
                         possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
-                                currentSquare,
+                                mSquare,
                                 square));
                     }
                 }
@@ -146,18 +146,21 @@ public class Knight extends Piece {
                 square = board[row-2][column+1];
                 if (square.isEmpty()) {
                     possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
-                            currentSquare,
+                            mSquare,
                             square));
                 } else {
                     if (square.getPiece().getColor() != mColor) {
                         possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
-                                currentSquare,
+                                mSquare,
                                 square));
                     }
                 }
             }
         }
 
+        if (!verification) {
+            removeCheckMoves(possibleMoves);
+        }
         return possibleMoves;
     }
 

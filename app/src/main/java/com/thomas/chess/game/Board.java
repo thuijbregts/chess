@@ -25,83 +25,102 @@ public class Board {
         }
     }
 
-    public void placePieces(ArrayList<Piece> alivePieces) {
+    public void placePieces() {
         Piece piece;
+        Square square;
 
-        piece = new Rook(Utils.WHITE, mGame);
-        alivePieces.add(piece);
-        mSquares[0][0].setPiece(piece);
+        square = mSquares[0][0];
+        piece = new Rook(Utils.WHITE, square, mGame);
+        mGame.getPlayers()[0].getAlivePieces().add(piece);
+        square.setPiece(piece);
 
-        piece = new Rook(Utils.WHITE, mGame);
-        alivePieces.add(piece);
-        mSquares[0][7].setPiece(piece);
+        square = mSquares[0][7];
+        piece = new Rook(Utils.WHITE, square, mGame);
+        mGame.getPlayers()[0].getAlivePieces().add(piece);
+        square.setPiece(piece);
 
-        piece = new Knight(Utils.WHITE, mGame);
-        alivePieces.add(piece);
-        mSquares[0][1].setPiece(piece);
+        square = mSquares[0][1];
+        piece = new Knight(Utils.WHITE, square, mGame);
+        mGame.getPlayers()[0].getAlivePieces().add(piece);
+        square.setPiece(piece);
 
-        piece = new Knight(Utils.WHITE, mGame);
-        alivePieces.add(piece);
-        mSquares[0][6].setPiece(piece);
+        square = mSquares[0][6];
+        piece = new Knight(Utils.WHITE, square, mGame);
+        mGame.getPlayers()[0].getAlivePieces().add(piece);
+        square.setPiece(piece);
 
-        piece = new Bishop(Utils.WHITE, mGame);
-        alivePieces.add(piece);
-        mSquares[0][2].setPiece(piece);
+        square = mSquares[0][2];
+        piece = new Bishop(Utils.WHITE, square, mGame);
+        mGame.getPlayers()[0].getAlivePieces().add(piece);
+        square.setPiece(piece);
 
-        piece = new Bishop(Utils.WHITE, mGame);
-        alivePieces.add(piece);
-        mSquares[0][5].setPiece(piece);
+        square = mSquares[0][5];
+        piece = new Bishop(Utils.WHITE, square, mGame);
+        mGame.getPlayers()[0].getAlivePieces().add(piece);
+        square.setPiece(piece);
 
-        piece = new Queen(Utils.WHITE, mGame);
-        alivePieces.add(piece);
-        mSquares[0][3].setPiece(piece);
+        square = mSquares[0][3];
+        piece = new Queen(Utils.WHITE, square, mGame);
+        mGame.getPlayers()[0].getAlivePieces().add(piece);
+        square.setPiece(piece);
 
-        piece = new King(Utils.WHITE, mGame);
-        alivePieces.add(piece);
-        mSquares[0][4].setPiece(piece);
+        square = mSquares[0][4];
+        piece = new King(Utils.WHITE, square, mGame);
+        mGame.getPlayers()[0].getAlivePieces().add(piece);
+        square.setPiece(piece);
 
         for (int i = 0; i < Utils.COLUMNS; i++) {
-            piece = new Pawn(Utils.WHITE, mGame);
-            alivePieces.add(piece);
-            mSquares[1][i].setPiece(piece);
+            square = mSquares[1][i];
+            piece = new Pawn(Utils.WHITE, square, mGame);
+            mGame.getPlayers()[0].getAlivePieces().add(piece);
+            square.setPiece(piece);
         }
 
-        piece = new Rook(Utils.BLACK, mGame);
-        alivePieces.add(piece);
-        mSquares[7][0].setPiece(piece);
+        square = mSquares[7][0];
+        piece = new Rook(Utils.BLACK, square, mGame);
+        mGame.getPlayers()[1].getAlivePieces().add(piece);
+        square.setPiece(piece);
 
-        piece = new Rook(Utils.BLACK, mGame);
-        alivePieces.add(piece);
-        mSquares[7][7].setPiece(piece);
+        square = mSquares[7][7];
+        piece = new Rook(Utils.BLACK, square, mGame);
+        mGame.getPlayers()[1].getAlivePieces().add(piece);
+        square.setPiece(piece);
 
-        piece = new Knight(Utils.BLACK, mGame);
-        alivePieces.add(piece);
-        mSquares[7][1].setPiece(piece);
+        square = mSquares[7][1];
+        piece = new Knight(Utils.BLACK, square, mGame);
+        mGame.getPlayers()[1].getAlivePieces().add(piece);
+        square.setPiece(piece);
 
-        piece = new Knight(Utils.BLACK, mGame);
-        alivePieces.add(piece);
-        mSquares[7][6].setPiece(piece);
+        square = mSquares[7][6];
+        piece = new Knight(Utils.BLACK, square, mGame);
+        mGame.getPlayers()[1].getAlivePieces().add(piece);
+        square.setPiece(piece);
 
-        piece = new Bishop(Utils.BLACK, mGame);
-        alivePieces.add(piece);
-        mSquares[7][2].setPiece(piece);
+        square = mSquares[7][2];
+        piece = new Bishop(Utils.BLACK, square, mGame);
+        mGame.getPlayers()[1].getAlivePieces().add(piece);
+        square.setPiece(piece);
 
-        piece = new Bishop(Utils.BLACK, mGame);
-        alivePieces.add(piece);
-        mSquares[7][5].setPiece(piece);
+        square = mSquares[7][5];
+        piece = new Bishop(Utils.BLACK, square, mGame);
+        mGame.getPlayers()[1].getAlivePieces().add(piece);
+        square.setPiece(piece);
 
-        piece = new Queen(Utils.BLACK, mGame);
-        alivePieces.add(piece);
-        mSquares[7][3].setPiece(piece);
+        square = mSquares[7][3];
+        piece = new Queen(Utils.BLACK, square, mGame);
+        mGame.getPlayers()[1].getAlivePieces().add(piece);
+        square.setPiece(piece);
 
-        piece = new King(Utils.BLACK, mGame);
-        alivePieces.add(piece);
-        mSquares[7][4].setPiece(piece);
+        square = mSquares[7][4];
+        piece = new King(Utils.BLACK, square, mGame);
+        mGame.getPlayers()[1].getAlivePieces().add(piece);
+        square.setPiece(piece);
 
         for (int i = 0; i < Utils.COLUMNS; i++) {
-            piece = new Pawn(Utils.BLACK, mGame);
-            alivePieces.add(piece);
-            mSquares[6][i].setPiece(piece);
+            square = mSquares[6][i];
+            piece = new Pawn(Utils.BLACK, square, mGame);
+            mGame.getPlayers()[1].getAlivePieces().add(piece);
+            square.setPiece(piece);
         }
     }
 

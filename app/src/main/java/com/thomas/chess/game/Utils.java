@@ -12,7 +12,6 @@ public class Utils {
 
     public static final int MOVE_TYPE_NORMAL = 0;
     public static final int MOVE_TYPE_PASSANT = 1;
-    public static final int MOVE_TYPE_CASTLING_LEFT = 2;
-    public static final int MOVE_TYPE_CASTLING_RIGHT = 3;
-    public static final int MOVE_TYPE_PROMOTION = 4;
+    public static final int MOVE_TYPE_CASTLING = 2;
+    public static final int MOVE_TYPE_PROMOTION = 3;
 }
