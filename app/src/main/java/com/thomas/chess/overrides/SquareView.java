@@ -50,6 +50,7 @@ public class SquareView extends ImageView implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+        boolean hasMoved = false;
         Square square = mGameActivity.getGame().getBoard().getSquares()[mRow][mColumn];
         Move move = mGameActivity.getMoveForSquare(square);
         if (move != null) {
@@ -59,10 +60,11 @@ public class SquareView extends ImageView implements View.OnClickListener {
                 mGameActivity.getGame().executeMove(move);
                 mGameActivity.clearSelection();
             }
+            hasMoved = true;
         } else {
             checkSquareValidity(square);
         }
-        mGameActivity.updateGameView();
+        mGameActivity.updateGameView(hasMoved);
     }
 
     private void checkSquareValidity(Square square) {
@@ -96,72 +98,7 @@ public class SquareView extends ImageView implements View.OnClickListener {
             setImageResource(android.R.color.transparent);
         } else {
             Piece piece = square.getPiece();
-
-            if (piece instanceof Pawn) {
-                switch (piece.getColor()) {
-                    case Utils.WHITE:
-                        setImageResource(R.drawable.pawn_w);
-                        break;
-                    case Utils.BLACK:
-                        setImageResource(R.drawable.pawn_b);
-                        break;
-                }
-            }
-
-            if (piece instanceof Rook) {
-                switch (piece.getColor()) {
-                    case Utils.WHITE:
-                        setImageResource(R.drawable.rook_w);
-                        break;
-                    case Utils.BLACK:
-                        setImageResource(R.drawable.rook_b);
-                        break;
-                }
-            }
-
-            if (piece instanceof Knight) {
-                switch (piece.getColor()) {
-                    case Utils.WHITE:
-                        setImageResource(R.drawable.knight_w);
-                        break;
-                    case Utils.BLACK:
-                        setImageResource(R.drawable.knigh_b);
-                        break;
-                }
-            }
-
-            if (piece instanceof Bishop) {
-                switch (piece.getColor()) {
-                    case Utils.WHITE:
-                        setImageResource(R.drawable.bishop_w);
-                        break;
-                    case Utils.BLACK:
-                        setImageResource(R.drawable.bishop_b);
-                        break;
-                }
-            }
-
-            if (piece instanceof Queen) {
-                switch (piece.getColor()) {
-                    case Utils.WHITE:
-                        setImageResource(R.drawable.queen_w);
-                        break;
-                    case Utils.BLACK:
-                        setImageResource(R.drawable.queen_b);
-                        break;
-                }
-            }
-
-            if (piece instanceof King) {
-                switch (piece.getColor()) {
-                    case Utils.WHITE:
-                        setImageResource(R.drawable.king_w);
-                        break;
-                    case Utils.BLACK:
-                        setImageResource(R.drawable.king_b);
-                        break;
-                }
-            }
+            Utils.setImageViewForPiece(this, piece);
         }
     }
 }

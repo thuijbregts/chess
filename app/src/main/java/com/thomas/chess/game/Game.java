@@ -20,7 +20,6 @@ public class Game {
     private boolean checkmate;
     private boolean stalemate;
     private boolean draw;
-    private boolean drawPossible;
 
     public Game(int gameType) {
         mGameType = gameType;
@@ -120,6 +119,14 @@ public class Game {
 
     public Player getOpponent(int color) {
         return (mPlayers[0].getColor() == color ? mPlayers[1] : mPlayers[0]);
+    }
+
+    public Player getWhitePLayer() {
+        return (mPlayers[0].getColor() == Utils.WHITE ? mPlayers[0] : mPlayers[1]);
+    }
+
+    public Player getBlackPlayer() {
+        return (mPlayers[0].getColor() == Utils.WHITE ? mPlayers[1] : mPlayers[0]);
     }
 
     public Player getCurrentPlayer() {

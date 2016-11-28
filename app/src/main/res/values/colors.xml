@@ -5,4 +5,8 @@
     <!--Board colors-->
     <color name="board_selected">#AA333388</color>
     <color name="board_possible_move">#AA338833</color>
+
+    <!--Player dead pieces container colors-->
+    <color name="player_header_background">#64371a</color>
+    <color name="player_container_background">#ba8d5b</color>
 </resources>

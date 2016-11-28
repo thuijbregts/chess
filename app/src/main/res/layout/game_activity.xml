@@ -8,6 +8,50 @@
     tools:context=".activities.MainActivity">
 
     <LinearLayout
+        style="@style/PlayerPieces"
+        android:layout_marginBottom="20dp">
+        <TextView
+            android:id="@+id/player_pieces_header_black"
+            style="@style/PlayerPiecesHeader"/>
+
+        <LinearLayout
+            android:id="@+id/player_pieces_container_black"
+            style="@style/PlayerPiecesContainer">
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/game_layout"
         android:layout_width="344dp"
         android:layout_height="344dp"
@@ -16,6 +60,53 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        style="@style/PlayerPieces">
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/PlayerPieces"
+        android:layout_marginTop="20dp">
+        <TextView
+            android:id="@+id/player_pieces_header_white"
+            style="@style/PlayerPiecesHeader" />
+
+        <LinearLayout
+            android:id="@+id/player_pieces_container_white"
+            style="@style/PlayerPiecesContainer">
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+            <ImageView
+                style="@style/PlayerPiecesImage"/>
+        </LinearLayout>
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/game_status"
@@ -24,4 +115,5 @@
         android:layout_height="wrap_content"
         android:textSize="24sp"
         android:textColor="@android:color/white"/>
+        
 </LinearLayout>

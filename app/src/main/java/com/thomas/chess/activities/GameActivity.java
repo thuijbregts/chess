@@ -20,6 +20,7 @@ import com.thomas.chess.game.Utils;
 import com.thomas.chess.overrides.PromotionDialog;
 import com.thomas.chess.overrides.SquareView;
 import com.thomas.chess.pieces.Piece;
+import com.thomas.chess.player.Player;
 
 import java.util.ArrayList;
 
@@ -31,6 +32,11 @@ public class GameActivity extends Activity {
     private SquareView mSelectedSquareView;
 
     private TextView mGameStatus;
+
+    private ArrayList<ImageView> mBlackDeadPieces;
+    private TextView mBlackName;
+    private ArrayList<ImageView> mWhiteDeadPieces;
+    private TextView mWhiteName;
 
     private ArrayList<Move> mPossibleMoves = new ArrayList<>();
 
@@ -46,7 +52,26 @@ public class GameActivity extends Activity {
 
     private void initializeGame() {
         mGame = new Game(Utils.GAME_SOLO);
+        setUpPlayerContainers();
         setUpViews();
+    }
+
+    private void setUpPlayerContainers() {
+        mBlackName = (TextView) findViewById(R.id.player_pieces_header_black);
+        mWhiteName = (TextView) findViewById(R.id.player_pieces_header_white);
+
+        mWhiteName.setText(mGame.getWhitePLayer().getName());
+        mBlackName.setText(mGame.getBlackPlayer().getName());
+
+        LinearLayout blackContainer = (LinearLayout) findViewById(R.id.player_pieces_container_black);
+        LinearLayout whiteContainer = (LinearLayout) findViewById(R.id.player_pieces_container_white);
+
+        mBlackDeadPieces = new ArrayList<>();
+        mWhiteDeadPieces = new ArrayList<>();
+        for (int i = 0; i < blackContainer.getChildCount(); i++) {
+            mBlackDeadPieces.add((ImageView) blackContainer.getChildAt(i));
+            mWhiteDeadPieces.add((ImageView) whiteContainer.getChildAt(i));
+        }
     }
 
     private void setUpViews() {
@@ -79,23 +104,44 @@ public class GameActivity extends Activity {
         }
     }
 
-    public void updateGameView() {
+    public void updateGameView(boolean hasMoved) {
         for (SquareView[] line : mSquareViews) {
             for (SquareView squareView : line) {
                 squareView.update();
             }
         }
 
-        if (getGame().isCheckmate()) {
-            mGameStatus.setText("Checkmate");
-        } else if (getGame().isStalemate()) {
-            mGameStatus.setText("Stalemate");
-        } else if (getGame().isDraw()) {
-            mGameStatus.setText("Draw");
-        } else if (getGame().isCheck()) {
-            mGameStatus.setText("Check");
-        } else {
-            mGameStatus.setText("");
+        if (hasMoved) {
+            if (getGame().isCheckmate()) {
+                mGameStatus.setText("Checkmate");
+            } else if (getGame().isStalemate()) {
+                mGameStatus.setText("Stalemate");
+            } else if (getGame().isDraw()) {
+                mGameStatus.setText("Draw");
+            } else if (getGame().isCheck()) {
+                mGameStatus.setText("Check");
+            } else {
+                mGameStatus.setText("");
+            }
+            updatePlayerContainers();
+        }
+    }
+
+    private void updatePlayerContainers() {
+        ArrayList<Piece> whiteDeadPieces = mGame.getWhitePLayer().getDeadPieces();
+        for (int i = 0; i < whiteDeadPieces.size(); i++) {
+            Utils.setImageViewForPiece(mWhiteDeadPieces.get(i), whiteDeadPieces.get(i));
+        }
+        for (int i = whiteDeadPieces.size(); i < mWhiteDeadPieces.size(); i++) {
+            mWhiteDeadPieces.get(i).setImageResource(android.R.color.transparent);
+        }
+
+        ArrayList<Piece> blackDeadPieces = mGame.getBlackPlayer().getDeadPieces();
+        for (int i = 0; i < blackDeadPieces.size(); i++) {
+            Utils.setImageViewForPiece(mBlackDeadPieces.get(i), blackDeadPieces.get(i));
+        }
+        for (int i = blackDeadPieces.size(); i < mBlackDeadPieces.size(); i++) {
+            mBlackDeadPieces.get(i).setImageResource(android.R.color.transparent);
         }
     }
 
