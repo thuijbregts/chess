@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="main_background">#291002</color>
+
+    <!--Board colors-->
+    <color name="board_selected">#AA333388</color>
+    <color name="board_possible_move">#AA338833</color>
 </resources>

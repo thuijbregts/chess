@@ -1,16 +1,37 @@
 package com.thomas.chess.pieces;
 
+import com.thomas.chess.game.Game;
+import com.thomas.chess.game.Move;
+import com.thomas.chess.game.Square;
+
+import java.util.ArrayList;
+
 public abstract class Piece {
 
-    public static final int WHITE = 0;
-    public static final int BLACK = 1;
+    protected Game mGame;
+    protected int mColor;
+    protected int mMovements;
 
-    private int color;
-    private int movements;
-
-    public Piece(int color) {
-        this.color = color;
+    public Piece(int color, Game game) {
+        mGame = game;
+        this.mColor = color;
     }
 
-    public abstract void GetMoves();
+    public abstract ArrayList<Move> getMoves(Square currentSquare);
+
+    public int getColor() {
+        return mColor;
+    }
+
+    public int getMovements() {
+        return mMovements;
+    }
+
+    public void addMovement() {
+        mMovements++;
+    }
+
+    public void removeMovement() {
+        mMovements--;
+    }
 }

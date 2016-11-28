@@ -1,4 +1,4 @@
-package com.thomas.chess.board;
+package com.thomas.chess.game;
 
 import com.thomas.chess.pieces.Piece;
 
@@ -6,8 +6,12 @@ public class Square {
 
     private boolean mEmpty;
     private Piece mPiece;
+    private int mRow;
+    private int mColumn;
 
-    public Square() {
+    public Square(int row, int column) {
+        mRow = row;
+        mColumn = column;
         mEmpty = true;
     }
 
@@ -20,14 +24,20 @@ public class Square {
     }
 
     public void setPiece(Piece piece) {
-        if (piece != null) {
-            mPiece = piece;
-            mEmpty = false;
-        }
+        mPiece = piece;
+        mEmpty = (piece == null);
     }
 
     public void clear() {
         mPiece = null;
         mEmpty = true;
+    }
+
+    public int getColumn() {
+        return mColumn;
+    }
+
+    public int getRow() {
+        return mRow;
     }
 }
