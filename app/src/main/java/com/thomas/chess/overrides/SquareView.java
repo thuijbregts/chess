@@ -17,6 +17,7 @@ import com.thomas.chess.pieces.Pawn;
 import com.thomas.chess.pieces.Piece;
 import com.thomas.chess.pieces.Queen;
 import com.thomas.chess.pieces.Rook;
+import com.thomas.chess.player.AIPlayer;
 
 import java.util.ArrayList;
 
@@ -69,7 +70,8 @@ public class SquareView extends ImageView implements View.OnClickListener {
 
     private void checkSquareValidity(Square square) {
         if (!square.isEmpty() && square.getPiece().getColor() ==
-                mGameActivity.getGame().getCurrentPlayer().getColor()) {
+                mGameActivity.getGame().getCurrentPlayer().getColor()
+                && !(mGameActivity.getGame().getCurrentPlayer() instanceof AIPlayer)) {
 
             mGameActivity.setPossibleMoves(square.getPiece().getMoves(false));
 

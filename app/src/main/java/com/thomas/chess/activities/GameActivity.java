@@ -1,16 +1,12 @@
 package com.thomas.chess.activities;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.thomas.chess.R;
 import com.thomas.chess.game.Game;
@@ -20,7 +16,6 @@ import com.thomas.chess.game.Utils;
 import com.thomas.chess.overrides.PromotionDialog;
 import com.thomas.chess.overrides.SquareView;
 import com.thomas.chess.pieces.Piece;
-import com.thomas.chess.player.Player;
 
 import java.util.ArrayList;
 
@@ -34,9 +29,7 @@ public class GameActivity extends Activity {
     private TextView mGameStatus;
 
     private ArrayList<ImageView> mBlackDeadPieces;
-    private TextView mBlackName;
     private ArrayList<ImageView> mWhiteDeadPieces;
-    private TextView mWhiteName;
 
     private ArrayList<Move> mPossibleMoves = new ArrayList<>();
 
@@ -45,23 +38,27 @@ public class GameActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_activity);
 
+        Bundle extras = getIntent().getExtras();
+        int gameType = extras.getInt(Utils.INTENT_GAME_TYPE);
+
         mGameLayout = (LinearLayout) findViewById(R.id.game_layout);
         mGameStatus = (TextView) findViewById(R.id.game_status);
-        initializeGame();
+        initializeGame(gameType);
     }
 
-    private void initializeGame() {
-        mGame = new Game(Utils.GAME_SOLO);
+    private void initializeGame(int gameType) {
+        Log.d("tag", "" + gameType);
+        mGame = new Game(gameType);
         setUpPlayerContainers();
-        setUpViews();
+        setUpBoardViews();
     }
 
     private void setUpPlayerContainers() {
-        mBlackName = (TextView) findViewById(R.id.player_pieces_header_black);
-        mWhiteName = (TextView) findViewById(R.id.player_pieces_header_white);
+        TextView blackName = (TextView) findViewById(R.id.player_pieces_header_black);
+        TextView whiteName = (TextView) findViewById(R.id.player_pieces_header_white);
 
-        mWhiteName.setText(mGame.getWhitePLayer().getName());
-        mBlackName.setText(mGame.getBlackPlayer().getName());
+        whiteName.setText(mGame.getWhitePLayer().getName());
+        blackName.setText(mGame.getBlackPlayer().getName());
 
         LinearLayout blackContainer = (LinearLayout) findViewById(R.id.player_pieces_container_black);
         LinearLayout whiteContainer = (LinearLayout) findViewById(R.id.player_pieces_container_white);
@@ -74,7 +71,7 @@ public class GameActivity extends Activity {
         }
     }
 
-    private void setUpViews() {
+    private void setUpBoardViews() {
         mSquareViews = new SquareView[8][8];
 
         LinearLayout rowLayout;

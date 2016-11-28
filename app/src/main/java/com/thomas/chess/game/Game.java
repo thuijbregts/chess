@@ -1,6 +1,7 @@
 package com.thomas.chess.game;
 
 import com.thomas.chess.pieces.Piece;
+import com.thomas.chess.player.AIPlayer;
 import com.thomas.chess.player.Player;
 import com.thomas.chess.player.RealPlayer;
 
@@ -33,10 +34,16 @@ public class Game {
 
         switch (mGameType) {
             case Utils.GAME_SOLO:
+                mPlayers[0] = mCurrentPlayer = new RealPlayer("You", Utils.WHITE);
+                mPlayers[1] = new AIPlayer(Utils.BLACK);
+                break;
+            case Utils.GAME_ONLINE:
                 mPlayers[0] = mCurrentPlayer = new RealPlayer("1", Utils.WHITE);
                 mPlayers[1] = new RealPlayer("2", Utils.BLACK);
                 break;
-            case Utils.GAME_ONLINE:
+            case Utils.GAME_TWO_PLAYERS:
+                mPlayers[0] = mCurrentPlayer = new RealPlayer("Player 1", Utils.WHITE);
+                mPlayers[1] = new RealPlayer("Player 2", Utils.BLACK);
                 break;
         }
 
