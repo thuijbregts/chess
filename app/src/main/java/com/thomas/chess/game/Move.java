@@ -190,8 +190,10 @@ public class Move {
                 return getCastlingAsString();
             case Utils.MOVE_TYPE_PASSANT:
                 return getEnPassantAsString();
+            case Utils.MOVE_TYPE_PROMOTION:
+                return getPromotionAsString();
             default:
-                return "lol";
+                return "";
         }
     }
 
@@ -217,5 +219,9 @@ public class Move {
 
     private String getEnPassantAsString() {
         return getNormalMoveAsString() + " e.p.";
+    }
+
+    private String getPromotionAsString() {
+        return getNormalMoveAsString() + Utils.getPieceCode(mPromotedPiece);
     }
 }

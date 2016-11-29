@@ -16,7 +16,6 @@ public class Game {
 
     private ArrayList<Move> mMoves;
 
-    private boolean promotion;
     private boolean check;
     private boolean checkmate;
     private boolean stalemate;
@@ -60,7 +59,6 @@ public class Game {
         move.make();
         mMoves.add(move);
         if (move.getMoveType() == Utils.MOVE_TYPE_PROMOTION) {
-            promotion = true;
             ArrayList<Piece> alivePieces = mCurrentPlayer.getAlivePieces();
             for (int i = 0; i < alivePieces.size(); i++) {
                 if (alivePieces.get(i).equals(move.getPromotedPawn())) {
@@ -85,6 +83,34 @@ public class Game {
         }
 
         updateGameStatus();
+    }
+
+    public void cancelMove() {
+        if (!mMoves.isEmpty()) {
+            Move move = mMoves.get(mMoves.size() - 1);
+            if (move.getMoveType() == Utils.MOVE_TYPE_PROMOTION) {
+                ArrayList<Piece> alivePieces = mCurrentPlayer.getAlivePieces();
+                for (int i = 0; i < alivePieces.size(); i++) {
+                    if (alivePieces.get(i).equals(move.getPromotedPiece())) {
+                        alivePieces.set(i, move.getPromotedPawn());
+                        break;
+                    }
+                }
+            }
+
+            Piece deadPiece = move.getDeadPiece();
+            if (deadPiece != null) {
+                mCurrentPlayer.getDeadPieces().remove(deadPiece);
+                mCurrentPlayer.getAlivePieces().add(deadPiece);
+            }
+
+            mCurrentPlayer = (mPlayers[0].equals(mCurrentPlayer) ? mPlayers[1] : mPlayers[0]);
+
+            move.unmake();
+            mMoves.remove(move);
+
+            updateGameStatus();
+        }
     }
 
     private void updateGameStatus() {
@@ -143,10 +169,6 @@ public class Game {
 
     public boolean isStalemate() {
         return stalemate;
-    }
-
-    public boolean isPromotion() {
-        return promotion;
     }
 
     public boolean isWaitForOpponent() {

@@ -51,7 +51,6 @@ public class GameActivity extends Activity {
     }
 
     private void initializeGame(int gameType) {
-        Log.d("tag", "" + gameType);
         mGame = new Game(gameType);
         setUpPlayerContainers();
         setUpBoardViews();
@@ -114,6 +113,15 @@ public class GameActivity extends Activity {
                 HistoryDialog dialog = new HistoryDialog(GameActivity.this);
                 dialog.setMoves(mGame.getMoves());
                 dialog.show();
+            }
+        });
+
+        Button undo = (Button) findViewById(R.id.game_undo);
+        undo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mGame.cancelMove();
+                updateGameView(true);
             }
         });
     }
