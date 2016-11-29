@@ -59,10 +59,6 @@ public class Game {
         move.make();
         mMoves.add(move);
         if (move.getMoveType() == Utils.MOVE_TYPE_PROMOTION) {
-<<<<<<< HEAD
-            promotion = true;
-=======
->>>>>>> develop
             ArrayList<Piece> alivePieces = mCurrentPlayer.getAlivePieces();
             for (int i = 0; i < alivePieces.size(); i++) {
                 if (alivePieces.get(i).equals(move.getPromotedPawn())) {
