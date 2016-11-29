@@ -95,4 +95,46 @@ public class Utils {
             }
         }
     }
+
+    public static String getPieceCode(Piece piece) {
+        if (piece instanceof Rook) {
+            return "R";
+        }
+        if (piece instanceof Bishop) {
+            return "B";
+        }
+        if (piece instanceof Knight) {
+            return "K";
+        }
+        if (piece instanceof Queen) {
+            return "Q";
+        }
+        if (piece instanceof King) {
+            return "K";
+        }
+        return "";
+    }
+
+    public static char getColumnCode(int column) {
+        switch (column) {
+            case 0:
+                return 'a';
+            case 1:
+                return 'b';
+            case 2:
+                return 'c';
+            case 3:
+                return 'd';
+            case 4:
+                return 'e';
+            case 5:
+                return 'f';
+            case 6:
+                return 'g';
+            case 7:
+                return 'h';
+            default:
+                return 'x';
+        }
+    }
 }

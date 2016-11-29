@@ -181,4 +181,41 @@ public class Move {
         square.setPiece(piece);
         piece.setSquare(square);
     }
+
+    public String getMoveAsString() {
+        switch (mMoveType) {
+            case Utils.MOVE_TYPE_NORMAL:
+                return getNormalMoveAsString();
+            case Utils.MOVE_TYPE_CASTLING:
+                return getCastlingAsString();
+            case Utils.MOVE_TYPE_PASSANT:
+                return getEnPassantAsString();
+            default:
+                return "lol";
+        }
+    }
+
+    private String getNormalMoveAsString() {
+        String result = "";
+        result += Utils.getPieceCode(mMovedPiece);
+        if (mDeadPiece != null) {
+            result += (result.length() == 0 ? Utils.getColumnCode(mSourceSquare.getColumn()):"");
+            result += "x";
+        }
+        result += Utils.getColumnCode(mDestinationSquare.getColumn());
+        result += (mDestinationSquare.getRow() + 1);
+        return result;
+    }
+
+    private String getCastlingAsString() {
+        if (mCastlingKing.getRow() == 0) {
+            return mCastlingRook.getColumn() == 0 ? "0-0-0":"0-0";
+        } else {
+            return mCastlingRook.getColumn() == 0 ? "0-0":"0-0-0";
+        }
+    }
+
+    private String getEnPassantAsString() {
+        return getNormalMoveAsString() + " e.p.";
+    }
 }
