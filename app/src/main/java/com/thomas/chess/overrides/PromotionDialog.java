@@ -38,7 +38,11 @@ public class PromotionDialog extends Dialog {
                 mMove.setPromotion(mPromotionPiece);
                 mGameActivity.getGame().executeMove(mMove);
                 mGameActivity.clearSelection();
+<<<<<<< HEAD
                 mGameActivity.updateGameView();
+=======
+                mGameActivity.updateGameView(true);
+>>>>>>> develop
             }
         });
         initializeComponents();

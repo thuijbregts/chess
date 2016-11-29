@@ -2,14 +2,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background_menu"
     tools:context=".activities.MainActivity">
 
-    <Button
-        android:id="@+id/play"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:text="play"
-        android:gravity="center"
-        android:layout_gravity="center"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="96dp"
+        android:layout_marginBottom="96dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2">
+
+
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/play_solo"
+            android:text="@string/menu_solo"
+            style="@style/MenuButton"/>
+        <Button
+            android:id="@+id/play_two_players"
+            android:text="@string/menu_two_players"
+            style="@style/MenuButton"/>
+        <Button
+            android:id="@+id/play_online"
+            android:text="@string/menu_online"
+            style="@style/MenuButton"/>
+
+    </LinearLayout>
+
+
 
 </LinearLayout>

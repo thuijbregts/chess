@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">Chess</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <!--Main Menu-->
+    <string name="menu_solo">Solo</string>
+    <string name="menu_online">Online</string>
+    <string name="menu_two_players">Two Players</string>
+
+    <!--Game View-->
+    <string name="game_history">History</string>
 </resources>

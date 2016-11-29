@@ -1,6 +1,7 @@
 package com.thomas.chess.game;
 
 import com.thomas.chess.pieces.Piece;
+import com.thomas.chess.player.AIPlayer;
 import com.thomas.chess.player.Player;
 import com.thomas.chess.player.RealPlayer;
 
@@ -15,12 +16,12 @@ public class Game {
 
     private ArrayList<Move> mMoves;
 
-    private boolean promotion;
     private boolean check;
     private boolean checkmate;
     private boolean stalemate;
     private boolean draw;
-    private boolean drawPossible;
+
+    private boolean waitForOpponent;
 
     public Game(int gameType) {
         mGameType = gameType;
@@ -34,10 +35,16 @@ public class Game {
 
         switch (mGameType) {
             case Utils.GAME_SOLO:
+                mPlayers[0] = mCurrentPlayer = new RealPlayer("You", Utils.WHITE);
+                mPlayers[1] = new AIPlayer(Utils.BLACK);
+                break;
+            case Utils.GAME_ONLINE:
                 mPlayers[0] = mCurrentPlayer = new RealPlayer("1", Utils.WHITE);
                 mPlayers[1] = new RealPlayer("2", Utils.BLACK);
                 break;
-            case Utils.GAME_ONLINE:
+            case Utils.GAME_TWO_PLAYERS:
+                mPlayers[0] = mCurrentPlayer = new RealPlayer("Player 1", Utils.WHITE);
+                mPlayers[1] = new RealPlayer("Player 2", Utils.BLACK);
                 break;
         }
 
@@ -52,7 +59,10 @@ public class Game {
         move.make();
         mMoves.add(move);
         if (move.getMoveType() == Utils.MOVE_TYPE_PROMOTION) {
+<<<<<<< HEAD
             promotion = true;
+=======
+>>>>>>> develop
             ArrayList<Piece> alivePieces = mCurrentPlayer.getAlivePieces();
             for (int i = 0; i < alivePieces.size(); i++) {
                 if (alivePieces.get(i).equals(move.getPromotedPawn())) {
@@ -79,39 +89,50 @@ public class Game {
         updateGameStatus();
     }
 
+    public void cancelMove() {
+        if (!mMoves.isEmpty()) {
+            Move move = mMoves.get(mMoves.size() - 1);
+            if (move.getMoveType() == Utils.MOVE_TYPE_PROMOTION) {
+                ArrayList<Piece> alivePieces = mCurrentPlayer.getAlivePieces();
+                for (int i = 0; i < alivePieces.size(); i++) {
+                    if (alivePieces.get(i).equals(move.getPromotedPiece())) {
+                        alivePieces.set(i, move.getPromotedPawn());
+                        break;
+                    }
+                }
+            }
+
+            Piece deadPiece = move.getDeadPiece();
+            if (deadPiece != null) {
+                mCurrentPlayer.getDeadPieces().remove(deadPiece);
+                mCurrentPlayer.getAlivePieces().add(deadPiece);
+            }
+
+            mCurrentPlayer = (mPlayers[0].equals(mCurrentPlayer) ? mPlayers[1] : mPlayers[0]);
+
+            move.unmake();
+            mMoves.remove(move);
+
+            updateGameStatus();
+        }
+    }
+
     private void updateGameStatus() {
-        check = isInCheck();
+        check = getOpponent(mCurrentPlayer.getColor()).isInCheck();
         checkmate = false;
         stalemate = false;
         draw = false;
 
-        boolean hasNoLegalMoves = hasNoLegalMove();
+        boolean hasNoLegalMoves = mCurrentPlayer.hasNoLegalMove();
 
         if (check) {
             checkmate = hasNoLegalMoves;
         } else {
             stalemate = hasNoLegalMoves;
         }
-    }
 
-    private boolean isInCheck() {
-        ArrayList<Piece> opponentPieces = getOpponent(mCurrentPlayer.getColor()).getAlivePieces();
-        for (Piece piece : opponentPieces) {
-            if (piece.hasCheck()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean hasNoLegalMove() {
-        ArrayList<Piece> myPieces = mCurrentPlayer.getAlivePieces();
-        for (Piece piece : myPieces) {
-            if (!piece.getMoves(false).isEmpty()) {
-                return false;
-            }
-        }
-        return true;
+        waitForOpponent = (mGameType != Utils.GAME_TWO_PLAYERS
+                && mCurrentPlayer.getColor() == Utils.BLACK);
     }
 
     public Player[] getPlayers() {
@@ -120,6 +141,14 @@ public class Game {
 
     public Player getOpponent(int color) {
         return (mPlayers[0].getColor() == color ? mPlayers[1] : mPlayers[0]);
+    }
+
+    public Player getWhitePLayer() {
+        return (mPlayers[0].getColor() == Utils.WHITE ? mPlayers[0] : mPlayers[1]);
+    }
+
+    public Player getBlackPlayer() {
+        return (mPlayers[0].getColor() == Utils.WHITE ? mPlayers[1] : mPlayers[0]);
     }
 
     public Player getCurrentPlayer() {
@@ -146,7 +175,7 @@ public class Game {
         return stalemate;
     }
 
-    public boolean isPromotion() {
-        return promotion;
+    public boolean isWaitForOpponent() {
+        return waitForOpponent;
     }
 }

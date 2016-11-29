@@ -33,6 +33,24 @@ public abstract class Player {
         return mColor;
     }
 
+    public boolean isInCheck() {
+        for (Piece piece : mAlivePieces) {
+            if (piece.hasCheck()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasNoLegalMove() {
+        for (Piece piece : mAlivePieces) {
+            if (!piece.getMoves(false).isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public void setAlivePieces(ArrayList<Piece> alivePieces) {
         this.mAlivePieces = alivePieces;
     }

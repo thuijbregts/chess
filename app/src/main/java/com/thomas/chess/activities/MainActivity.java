@@ -7,21 +7,46 @@ import android.view.View;
 import android.widget.Button;
 
 import com.thomas.chess.R;
+import com.thomas.chess.game.Utils;
 
 public class MainActivity extends Activity {
-
-    public static String MY_TAG = "Tag";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button play = (Button) findViewById(R.id.play);
-        play.setOnClickListener(new View.OnClickListener() {
+        initializeMenuButtons();
+    }
+
+    private void initializeMenuButtons() {
+        Button playSolo = (Button) findViewById(R.id.play_solo);
+        playSolo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, GameActivity.class);
+                intent.putExtra(Utils.INTENT_GAME_TYPE, Utils.GAME_SOLO);
+                startActivity(intent);
+            }
+        });
+
+        Button playTwoPlayers = (Button) findViewById(R.id.play_two_players);
+        playTwoPlayers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, GameActivity.class);
+                intent.putExtra(Utils.INTENT_GAME_TYPE, Utils.GAME_TWO_PLAYERS);
+                startActivity(intent);
+            }
+        });
+
+        Button playOnline = (Button) findViewById(R.id.play_online);
+        playOnline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, GameActivity.class);
+                intent.putExtra(Utils.INTENT_GAME_TYPE, Utils.GAME_ONLINE);
+                //TODO connection activity
                 startActivity(intent);
             }
         });
