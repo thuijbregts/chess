@@ -1,8 +1,11 @@
 package com.thomas.chess.activities;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -13,6 +16,7 @@ import com.thomas.chess.game.Game;
 import com.thomas.chess.game.Move;
 import com.thomas.chess.game.Square;
 import com.thomas.chess.game.Utils;
+import com.thomas.chess.overrides.HistoryDialog;
 import com.thomas.chess.overrides.PromotionDialog;
 import com.thomas.chess.overrides.SquareView;
 import com.thomas.chess.pieces.Piece;
@@ -51,6 +55,7 @@ public class GameActivity extends Activity {
         mGame = new Game(gameType);
         setUpPlayerContainers();
         setUpBoardViews();
+        setUpButtons();
     }
 
     private void setUpPlayerContainers() {
@@ -99,6 +104,18 @@ public class GameActivity extends Activity {
             }
             mGameLayout.addView(rowLayout);
         }
+    }
+
+    private void setUpButtons() {
+        Button showHistory = (Button) findViewById(R.id.game_show_history);
+        showHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HistoryDialog dialog = new HistoryDialog(GameActivity.this);
+                dialog.setMoves(mGame.getMoves());
+                dialog.show();
+            }
+        });
     }
 
     public void updateGameView(boolean hasMoved) {

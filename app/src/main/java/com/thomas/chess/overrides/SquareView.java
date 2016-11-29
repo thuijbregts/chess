@@ -51,27 +51,28 @@ public class SquareView extends ImageView implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        boolean hasMoved = false;
-        Square square = mGameActivity.getGame().getBoard().getSquares()[mRow][mColumn];
-        Move move = mGameActivity.getMoveForSquare(square);
-        if (move != null) {
-            if (move.getMoveType() == Utils.MOVE_TYPE_PROMOTION) {
-                mGameActivity.choosePromotionPiece(move);
+        if (!mGameActivity.getGame().isWaitForOpponent()) {
+            boolean hasMoved = false;
+            Square square = mGameActivity.getGame().getBoard().getSquares()[mRow][mColumn];
+            Move move = mGameActivity.getMoveForSquare(square);
+            if (move != null) {
+                if (move.getMoveType() == Utils.MOVE_TYPE_PROMOTION) {
+                    mGameActivity.choosePromotionPiece(move);
+                } else {
+                    mGameActivity.getGame().executeMove(move);
+                    mGameActivity.clearSelection();
+                }
+                hasMoved = true;
             } else {
-                mGameActivity.getGame().executeMove(move);
-                mGameActivity.clearSelection();
+                checkSquareValidity(square);
             }
-            hasMoved = true;
-        } else {
-            checkSquareValidity(square);
+            mGameActivity.updateGameView(hasMoved);
         }
-        mGameActivity.updateGameView(hasMoved);
     }
 
     private void checkSquareValidity(Square square) {
         if (!square.isEmpty() && square.getPiece().getColor() ==
-                mGameActivity.getGame().getCurrentPlayer().getColor()
-                && !(mGameActivity.getGame().getCurrentPlayer() instanceof AIPlayer)) {
+                mGameActivity.getGame().getCurrentPlayer().getColor()) {
 
             mGameActivity.setPossibleMoves(square.getPiece().getMoves(false));
 

@@ -22,6 +22,8 @@ public class Game {
     private boolean stalemate;
     private boolean draw;
 
+    private boolean waitForOpponent;
+
     public Game(int gameType) {
         mGameType = gameType;
         initializeGame();
@@ -86,38 +88,21 @@ public class Game {
     }
 
     private void updateGameStatus() {
-        check = isInCheck();
+        check = getOpponent(mCurrentPlayer.getColor()).isInCheck();
         checkmate = false;
         stalemate = false;
         draw = false;
 
-        boolean hasNoLegalMoves = hasNoLegalMove();
+        boolean hasNoLegalMoves = mCurrentPlayer.hasNoLegalMove();
 
         if (check) {
             checkmate = hasNoLegalMoves;
         } else {
             stalemate = hasNoLegalMoves;
         }
-    }
 
-    private boolean isInCheck() {
-        ArrayList<Piece> opponentPieces = getOpponent(mCurrentPlayer.getColor()).getAlivePieces();
-        for (Piece piece : opponentPieces) {
-            if (piece.hasCheck()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean hasNoLegalMove() {
-        ArrayList<Piece> myPieces = mCurrentPlayer.getAlivePieces();
-        for (Piece piece : myPieces) {
-            if (!piece.getMoves(false).isEmpty()) {
-                return false;
-            }
-        }
-        return true;
+        waitForOpponent = (mGameType != Utils.GAME_TWO_PLAYERS
+                && mCurrentPlayer.getColor() == Utils.BLACK);
     }
 
     public Player[] getPlayers() {
@@ -162,5 +147,9 @@ public class Game {
 
     public boolean isPromotion() {
         return promotion;
+    }
+
+    public boolean isWaitForOpponent() {
+        return waitForOpponent;
     }
 }

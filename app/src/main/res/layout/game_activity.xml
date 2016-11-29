@@ -108,6 +108,11 @@
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/game_show_history"
+        android:layout_width="20dp"
+        android:layout_height="20dp" />
+
     <TextView
         android:id="@+id/game_status"
         android:layout_marginTop="50dp"
