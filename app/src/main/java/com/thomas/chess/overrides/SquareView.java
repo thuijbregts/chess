@@ -51,19 +51,6 @@ public class SquareView extends ImageView implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-<<<<<<< HEAD
-        Square square = mGameActivity.getGame().getBoard().getSquares()[mRow][mColumn];
-        Move move = mGameActivity.getMoveForSquare(square);
-        if (move != null) {
-            if (move.getMoveType() == Utils.MOVE_TYPE_PROMOTION) {
-                mGameActivity.choosePromotionPiece(move);
-            } else {
-                mGameActivity.getGame().executeMove(move);
-                mGameActivity.clearSelection();
-            }
-        } else {
-            checkSquareValidity(square);
-=======
         if (!mGameActivity.getGame().isWaitForOpponent()) {
             boolean hasMoved = false;
             Square square = mGameActivity.getGame().getBoard().getSquares()[mRow][mColumn];
@@ -80,7 +67,6 @@ public class SquareView extends ImageView implements View.OnClickListener {
                 checkSquareValidity(square);
             }
             mGameActivity.updateGameView(hasMoved);
->>>>>>> develop
         }
     }
 
