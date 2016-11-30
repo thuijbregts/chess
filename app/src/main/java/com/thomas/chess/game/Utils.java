@@ -104,7 +104,7 @@ public class Utils {
             return "B";
         }
         if (piece instanceof Knight) {
-            return "K";
+            return "N";
         }
         if (piece instanceof Queen) {
             return "Q";
