@@ -1,27 +1,19 @@
-package com.thomas.chess.overrides;
+package com.thomas.chess.views;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.thomas.chess.R;
 import com.thomas.chess.activities.GameActivity;
-import com.thomas.chess.game.Game;
 import com.thomas.chess.game.Move;
-import com.thomas.chess.pieces.Bishop;
-import com.thomas.chess.pieces.Knight;
-import com.thomas.chess.pieces.Piece;
-import com.thomas.chess.pieces.Queen;
-import com.thomas.chess.pieces.Rook;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,13 +40,12 @@ public class HistoryDialog extends Dialog {
         listView.setAdapter(listAdapter);
     }
 
-    public void setMoves(List<Move> moves) {
+    public void setMoves(List<Move> moves, int moveCount) {
         mTurns = new ArrayList<>();
-        int movesCount = moves.size();
-        int turnsCount = (int) Math.ceil(movesCount / 2.f);
+        int turnsCount = (int) Math.ceil(moveCount / 2.f);
         Turn turn;
         for (int i = 0; i < turnsCount; i++) {
-            if (movesCount < i*2 + 2) {
+            if (moveCount < i*2 + 2) {
                 turn = new Turn(i+1, moves.get(i*2), null);
             } else {
                 turn = new Turn(i+1, moves.get(i*2), moves.get(i*2 + 1));

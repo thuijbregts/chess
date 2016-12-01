@@ -15,6 +15,7 @@ public class Game {
     private Player mCurrentPlayer;
 
     private ArrayList<Move> mMoves;
+    private int mMoveCount;
 
     private boolean check;
     private boolean checkmate;
@@ -56,8 +57,17 @@ public class Game {
     }
 
     public void executeMove(Move move) {
+        if (mMoveCount == mMoves.size()) {
+            mMoves.add(move);
+            move.checkAmbiguousMove(mCurrentPlayer);
+        } else if (!mMoves.get(mMoveCount).equals(move)) {
+            mMoves.set(mMoveCount, move);
+            mMoves.subList(mMoveCount +1, mMoves.size()).clear();
+            move.checkAmbiguousMove(mCurrentPlayer);
+        }
+
         move.make();
-        mMoves.add(move);
+
         if (move.getMoveType() == Utils.MOVE_TYPE_PROMOTION) {
             ArrayList<Piece> alivePieces = mCurrentPlayer.getAlivePieces();
             for (int i = 0; i < alivePieces.size(); i++) {
@@ -82,12 +92,13 @@ public class Game {
             }
         }
 
+        mMoveCount++;
         updateGameStatus();
     }
 
     public void cancelMove() {
-        if (!mMoves.isEmpty()) {
-            Move move = mMoves.get(mMoves.size() - 1);
+        if (mMoveCount > 0) {
+            Move move = mMoves.get(mMoveCount -1);
             if (move.getMoveType() == Utils.MOVE_TYPE_PROMOTION) {
                 ArrayList<Piece> alivePieces = mCurrentPlayer.getAlivePieces();
                 for (int i = 0; i < alivePieces.size(); i++) {
@@ -107,8 +118,8 @@ public class Game {
             mCurrentPlayer = (mPlayers[0].equals(mCurrentPlayer) ? mPlayers[1] : mPlayers[0]);
 
             move.unmake();
-            mMoves.remove(move);
 
+            mMoveCount--;
             updateGameStatus();
         }
     }
@@ -126,6 +137,8 @@ public class Game {
         } else {
             stalemate = hasNoLegalMoves;
         }
+
+        mMoves.get(mMoveCount-1).setGameStates(check, checkmate, draw);
 
         waitForOpponent = (mGameType != Utils.GAME_TWO_PLAYERS
                 && mCurrentPlayer.getColor() == Utils.BLACK);
@@ -145,6 +158,10 @@ public class Game {
 
     public Player getBlackPlayer() {
         return (mPlayers[0].getColor() == Utils.WHITE ? mPlayers[1] : mPlayers[0]);
+    }
+
+    public int getMoveCount() {
+        return mMoveCount;
     }
 
     public Player getCurrentPlayer() {

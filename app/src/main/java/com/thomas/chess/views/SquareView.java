@@ -1,4 +1,4 @@
-package com.thomas.chess.overrides;
+package com.thomas.chess.views;
 
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
@@ -10,14 +10,7 @@ import com.thomas.chess.activities.GameActivity;
 import com.thomas.chess.game.Move;
 import com.thomas.chess.game.Square;
 import com.thomas.chess.game.Utils;
-import com.thomas.chess.pieces.Bishop;
-import com.thomas.chess.pieces.King;
-import com.thomas.chess.pieces.Knight;
-import com.thomas.chess.pieces.Pawn;
 import com.thomas.chess.pieces.Piece;
-import com.thomas.chess.pieces.Queen;
-import com.thomas.chess.pieces.Rook;
-import com.thomas.chess.player.AIPlayer;
 
 import java.util.ArrayList;
 
@@ -54,19 +47,21 @@ public class SquareView extends ImageView implements View.OnClickListener {
         if (!mGameActivity.getGame().isWaitForOpponent()) {
             boolean hasMoved = false;
             Square square = mGameActivity.getGame().getBoard().getSquares()[mRow][mColumn];
-            Move move = mGameActivity.getMoveForSquare(square);
-            if (move != null) {
-                if (move.getMoveType() == Utils.MOVE_TYPE_PROMOTION) {
-                    mGameActivity.choosePromotionPiece(move);
+            if (!(square.isEmpty() && mGameActivity.getSelectedSquareView() == null)) {
+                Move move = mGameActivity.getMoveForSquare(square);
+                if (move != null) {
+                    if (move.getMoveType() == Utils.MOVE_TYPE_PROMOTION) {
+                        mGameActivity.choosePromotionPiece(move);
+                    } else {
+                        mGameActivity.getGame().executeMove(move);
+                        mGameActivity.clearSelection();
+                    }
+                    hasMoved = true;
                 } else {
-                    mGameActivity.getGame().executeMove(move);
-                    mGameActivity.clearSelection();
+                    checkSquareValidity(square);
                 }
-                hasMoved = true;
-            } else {
-                checkSquareValidity(square);
+                mGameActivity.updateGameView(hasMoved);
             }
-            mGameActivity.updateGameView(hasMoved);
         }
     }
 
@@ -74,8 +69,12 @@ public class SquareView extends ImageView implements View.OnClickListener {
         if (!square.isEmpty() && square.getPiece().getColor() ==
                 mGameActivity.getGame().getCurrentPlayer().getColor()) {
 
-            mGameActivity.setPossibleMoves(square.getPiece().getMoves(false));
-
+            ArrayList<Move> possibleMoves = mGameActivity.getMovesForSquare(square);
+            if (possibleMoves == null) {
+                mGameActivity.addPossibleMoves(square, square.getPiece().getMoves(false));
+            } else {
+                mGameActivity.setPossibleMoves(possibleMoves);
+            }
             mGameActivity.setSelectedSquareView(this);
         } else {
             mGameActivity.clearSelection();

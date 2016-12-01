@@ -118,6 +118,11 @@
             android:layout_height="48dp" />
 
         <Button
+            android:id="@+id/game_redo"
+            android:layout_width="48dp"
+            android:layout_height="48dp" />
+
+        <Button
             android:id="@+id/game_show_history"
             android:layout_width="48dp"
             android:layout_height="48dp" />

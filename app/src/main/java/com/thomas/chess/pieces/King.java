@@ -19,18 +19,10 @@ public class King extends Piece {
         ArrayList<Move> possibleMoves = new ArrayList<>();
 
         Square[][] board = mGame.getBoard().getSquares();
-        Square[][] castlingBoard = board;
         Square square;
 
         int row = mSquare.getRow();
         int column = mSquare.getColumn();
-
-        if (mColor == Utils.BLACK) {
-            castlingBoard = Board.horizontalMirror(board);
-            board = Board.rotate(board);
-            row = (Utils.ROWS-1) - mSquare.getRow();
-            column = (Utils.COLUMNS-1) - mSquare.getColumn();
-        }
 
         int startRow = (row > 0 ? -1 : 0);
         int endRow = (row < Utils.ROWS-1 ? 1 : 0);
@@ -57,6 +49,10 @@ public class King extends Piece {
         }
         if (!verification) {
             Move move;
+            Square[][] castlingBoard = board;
+            if (mColor == Utils.BLACK) {
+                castlingBoard = Board.horizontalMirror(board);
+            }
             if (canCastlingRight(castlingBoard)) {
                 move = new Move(Utils.MOVE_TYPE_CASTLING,
                         mSquare,

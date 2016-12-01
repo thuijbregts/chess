@@ -25,12 +25,6 @@ public class Bishop extends Piece {
         int row = mSquare.getRow();
         int column = mSquare.getColumn();
 
-        if (mColor == Utils.BLACK) {
-            board = Board.rotate(board);
-            row = (Utils.ROWS-1) - mSquare.getRow();
-            column = (Utils.COLUMNS-1) - mSquare.getColumn();
-        }
-
         int maxMoves = (row < column ? row : column);
         int i = 1;
         while (i <= maxMoves) {

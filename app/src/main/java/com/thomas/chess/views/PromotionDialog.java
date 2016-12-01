@@ -1,9 +1,7 @@
-package com.thomas.chess.overrides;
+package com.thomas.chess.views;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;

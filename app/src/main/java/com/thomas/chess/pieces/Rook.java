@@ -24,12 +24,6 @@ public class Rook extends Piece {
         int row = mSquare.getRow();
         int column = mSquare.getColumn();
 
-        if (mColor == Utils.BLACK) {
-            board = Board.rotate(board);
-            row = (Utils.ROWS-1) - mSquare.getRow();
-            column = (Utils.COLUMNS-1) - mSquare.getColumn();
-        }
-
         for (int i = row+1; i < Utils.ROWS; i++) {
             square = board[i][column];
             if (square.isEmpty()) {

@@ -1,9 +1,7 @@
 package com.thomas.chess.activities;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -16,9 +14,9 @@ import com.thomas.chess.game.Game;
 import com.thomas.chess.game.Move;
 import com.thomas.chess.game.Square;
 import com.thomas.chess.game.Utils;
-import com.thomas.chess.overrides.HistoryDialog;
-import com.thomas.chess.overrides.PromotionDialog;
-import com.thomas.chess.overrides.SquareView;
+import com.thomas.chess.views.HistoryDialog;
+import com.thomas.chess.views.PromotionDialog;
+import com.thomas.chess.views.SquareView;
 import com.thomas.chess.pieces.Piece;
 
 import java.util.ArrayList;
@@ -35,7 +33,8 @@ public class GameActivity extends Activity {
     private ArrayList<ImageView> mBlackDeadPieces;
     private ArrayList<ImageView> mWhiteDeadPieces;
 
-    private ArrayList<Move> mPossibleMoves = new ArrayList<>();
+    private ArrayList<SquareMoves> mAnalyzedSquares = new ArrayList<>();
+    private ArrayList<Move> mPossibleMoves;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +110,7 @@ public class GameActivity extends Activity {
             @Override
             public void onClick(View v) {
                 HistoryDialog dialog = new HistoryDialog(GameActivity.this);
-                dialog.setMoves(mGame.getMoves());
+                dialog.setMoves(mGame.getMoves(), mGame.getMoveCount());
                 dialog.show();
             }
         });
@@ -121,7 +120,20 @@ public class GameActivity extends Activity {
             @Override
             public void onClick(View v) {
                 mGame.cancelMove();
+                clearSelection();
                 updateGameView(true);
+            }
+        });
+
+        Button redo = (Button) findViewById(R.id.game_redo);
+        redo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mGame.getMoves().size() > mGame.getMoveCount()) {
+                    mGame.executeMove(mGame.getMoves().get(mGame.getMoveCount()));
+                    clearSelection();
+                    updateGameView(true);
+                }
             }
         });
     }
@@ -146,6 +158,7 @@ public class GameActivity extends Activity {
                 mGameStatus.setText("");
             }
             updatePlayerContainers();
+            mAnalyzedSquares.clear();
         }
     }
 
@@ -169,7 +182,7 @@ public class GameActivity extends Activity {
 
     public void clearSelection() {
         mSelectedSquareView = null;
-        mPossibleMoves.clear();
+        mPossibleMoves = null;
     }
 
     public void choosePromotionPiece(Move move) {
@@ -182,16 +195,26 @@ public class GameActivity extends Activity {
         return mGame;
     }
 
-    public SquareView[][] getSquareViews() {
-        return mSquareViews;
-    }
-
     public ArrayList<Move> getPossibleMoves() {
         return mPossibleMoves;
     }
 
     public void setPossibleMoves(ArrayList<Move> possibleMoves) {
+        this.mPossibleMoves = possibleMoves;
+    }
+
+    public void addPossibleMoves(Square square, ArrayList<Move> possibleMoves) {
         mPossibleMoves = possibleMoves;
+        mAnalyzedSquares.add(new SquareMoves(square, possibleMoves));
+    }
+
+    public ArrayList<Move> getMovesForSquare(Square square) {
+        for (SquareMoves squareMoves:mAnalyzedSquares) {
+            if (square.equals(squareMoves.getSquare())) {
+                return squareMoves.getPossibleMoves();
+            }
+        }
+        return null;
     }
 
     public SquareView getSelectedSquareView() {
@@ -203,11 +226,33 @@ public class GameActivity extends Activity {
     }
 
     public Move getMoveForSquare(Square square) {
+        if (mPossibleMoves == null) {
+            return null;
+        }
         for (Move move : mPossibleMoves) {
             if (move.getDestinationSquare().equals(square)) {
                 return move;
             }
         }
         return null;
+    }
+
+    private class SquareMoves {
+
+        Square mSquare;
+        ArrayList<Move> mPossibleMoves;
+
+        public SquareMoves(Square square, ArrayList<Move> possibleMoves) {
+            mSquare = square;
+            mPossibleMoves = possibleMoves;
+        }
+
+        public ArrayList<Move> getPossibleMoves() {
+            return mPossibleMoves;
+        }
+
+        public Square getSquare() {
+            return mSquare;
+        }
     }
 }

@@ -1,6 +1,9 @@
 package com.thomas.chess.game;
 
 import com.thomas.chess.pieces.Piece;
+import com.thomas.chess.player.Player;
+
+import java.util.ArrayList;
 
 public class Move {
 
@@ -18,6 +21,17 @@ public class Move {
 
     private Piece mPromotedPiece;
     private Piece mPromotedPawn;
+
+    private boolean ambiguousMove;
+    private boolean sameRowFound;
+    private boolean sameColumnFound;
+
+    private boolean check;
+    private boolean checkmate;
+
+    private boolean whiteWon;
+    private boolean blackWon;
+    private boolean draw;
 
     public Move(int moveType, Square sourceSquare, Square destinationSquare) {
         mMoveType = moveType;
@@ -86,6 +100,34 @@ public class Move {
 
     public Square getDestinationSquare() {
         return mDestinationSquare;
+    }
+
+    public void setGameStates(boolean check, boolean checkmate, boolean draw) {
+        this.check = check;
+        this.checkmate = checkmate;
+        this.draw = draw;
+    }
+
+    public void checkAmbiguousMove(Player player) {
+        ArrayList<Piece> alivePieces = player.getAlivePieces();
+        Piece piece;
+        ArrayList<Move> pieceMoves;
+        for (int i = 0; i < alivePieces.size(); i++) {
+            piece = alivePieces.get(i);
+            if (piece.getClass().equals(mMovedPiece.getClass()) && !piece.equals(mMovedPiece)) {
+                pieceMoves = piece.getMoves(false);
+                for (Move move : pieceMoves) {
+                    if (move.getDestinationSquare().equals(mDestinationSquare)) {
+                        if (move.getSourceSquare().getRow() == mSourceSquare.getRow()) {
+                            sameRowFound = true;
+                        } else if (move.getSourceSquare().getColumn() == mSourceSquare.getColumn()) {
+                            sameColumnFound = true;
+                        }
+                        ambiguousMove = true;
+                    }
+                }
+            }
+        }
     }
 
     public void setEnPassant(Square enPassantSquare) {
@@ -183,23 +225,47 @@ public class Move {
     }
 
     public String getMoveAsString() {
+        String result = "";
         switch (mMoveType) {
             case Utils.MOVE_TYPE_NORMAL:
-                return getNormalMoveAsString();
+                result = getNormalMoveAsString();
+                break;
             case Utils.MOVE_TYPE_CASTLING:
-                return getCastlingAsString();
+                result = getCastlingAsString();
+                break;
             case Utils.MOVE_TYPE_PASSANT:
-                return getEnPassantAsString();
+                result = getEnPassantAsString();
+                break;
             case Utils.MOVE_TYPE_PROMOTION:
-                return getPromotionAsString();
-            default:
-                return "";
+                result = getPromotionAsString();
         }
+        if (checkmate) {
+            result += "#";
+        } else if (check) {
+            result += "+";
+        } else if (whiteWon) {
+            result += "1-0";
+        } else if (blackWon) {
+            result += "0-1";
+        } else if (draw) {
+            result += "1⁄2– 1⁄2";
+        }
+        return result;
     }
 
     private String getNormalMoveAsString() {
         String result = "";
         result += Utils.getPieceCode(mMovedPiece);
+        if (ambiguousMove) {
+            if (!sameColumnFound) {
+                result += Utils.getColumnCode(mSourceSquare.getColumn());
+            } else if (!sameRowFound) {
+                result += (mSourceSquare.getRow() + 1);
+            } else {
+                result += Utils.getColumnCode(mSourceSquare.getColumn());
+                result += mSourceSquare.getRow() + 1;
+            }
+        }
         if (mDeadPiece != null) {
             result += (result.length() == 0 ? Utils.getColumnCode(mSourceSquare.getColumn()):"");
             result += "x";
@@ -210,11 +276,7 @@ public class Move {
     }
 
     private String getCastlingAsString() {
-        if (mCastlingKing.getRow() == 0) {
-            return mCastlingRook.getColumn() == 0 ? "0-0-0":"0-0";
-        } else {
-            return mCastlingRook.getColumn() == 0 ? "0-0":"0-0-0";
-        }
+        return mCastlingRook.getColumn() == 0 ? "0-0-0":"0-0";
     }
 
     private String getEnPassantAsString() {

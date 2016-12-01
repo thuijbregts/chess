@@ -24,12 +24,6 @@ public class Knight extends Piece {
         int row = mSquare.getRow();
         int column = mSquare.getColumn();
 
-        if (mColor == Utils.BLACK) {
-            board = Board.rotate(board);
-            row = (Utils.ROWS-1) - mSquare.getRow();
-            column = (Utils.COLUMNS-1) - mSquare.getColumn();
-        }
-
         if (row < Utils.ROWS-1) {
             if (column > 1) {
                 square = board[row+1][column-2];
