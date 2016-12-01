@@ -33,7 +33,7 @@ public abstract class Player {
         return mColor;
     }
 
-    public boolean isInCheck() {
+    public boolean hasCheck() {
         for (Piece piece : mAlivePieces) {
             if (piece.hasCheck()) {
                 return true;

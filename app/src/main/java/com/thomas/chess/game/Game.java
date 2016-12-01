@@ -120,26 +120,34 @@ public class Game {
             move.unmake();
 
             mMoveCount--;
-            updateGameStatus();
+            resumePreviousGameStatus();
         }
     }
 
     private void updateGameStatus() {
-        check = getOpponent(mCurrentPlayer.getColor()).isInCheck();
-        checkmate = false;
-        stalemate = false;
+        check = getOpponent(mCurrentPlayer.getColor()).hasCheck();
+        boolean hasNoLegalMoves = mCurrentPlayer.hasNoLegalMove();
+        checkmate = hasNoLegalMoves && check;
+        stalemate = hasNoLegalMoves && !check;
         draw = false;
 
-        boolean hasNoLegalMoves = mCurrentPlayer.hasNoLegalMove();
+        mMoves.get(mMoveCount-1).setGameStates(check, checkmate, stalemate, draw);
 
-        if (check) {
-            checkmate = hasNoLegalMoves;
+        updateWaitForOpponent();
+    }
+
+    private void resumePreviousGameStatus() {
+        checkmate = stalemate = draw = false;
+        if (mMoveCount == 0) {
+            check = false;
         } else {
-            stalemate = hasNoLegalMoves;
+            Move move = mMoves.get(mMoveCount-1);
+            check = move.isCheck();
         }
+        updateWaitForOpponent();
+    }
 
-        mMoves.get(mMoveCount-1).setGameStates(check, checkmate, draw);
-
+    public void updateWaitForOpponent() {
         waitForOpponent = (mGameType != Utils.GAME_TWO_PLAYERS
                 && mCurrentPlayer.getColor() == Utils.BLACK);
     }

@@ -28,6 +28,7 @@ public class Move {
 
     private boolean check;
     private boolean checkmate;
+    private boolean stalemate;
 
     private boolean whiteWon;
     private boolean blackWon;
@@ -102,9 +103,30 @@ public class Move {
         return mDestinationSquare;
     }
 
-    public void setGameStates(boolean check, boolean checkmate, boolean draw) {
+    public boolean isCheck() {
+        return check;
+    }
+
+    public boolean isCheckmate() {
+        return checkmate;
+    }
+
+    public boolean isWhiteWon() {
+        return whiteWon;
+    }
+
+    public boolean isBlackWon() {
+        return blackWon;
+    }
+
+    public boolean isDraw() {
+        return draw;
+    }
+
+    public void setGameStates(boolean check, boolean checkmate, boolean stalemate, boolean draw) {
         this.check = check;
         this.checkmate = checkmate;
+        this.stalemate = stalemate;
         this.draw = draw;
     }
 
