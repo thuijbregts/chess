@@ -10,11 +10,11 @@ import com.thomas.chess.R;
 import com.thomas.chess.activities.GameActivity;
 import com.thomas.chess.game.Game;
 import com.thomas.chess.game.Move;
-import com.thomas.chess.pieces.Bishop;
-import com.thomas.chess.pieces.Knight;
-import com.thomas.chess.pieces.Piece;
-import com.thomas.chess.pieces.Queen;
-import com.thomas.chess.pieces.Rook;
+import com.thomas.chess.game.pieces.Bishop;
+import com.thomas.chess.game.pieces.Knight;
+import com.thomas.chess.game.pieces.Piece;
+import com.thomas.chess.game.pieces.Queen;
+import com.thomas.chess.game.pieces.Rook;
 
 
 public class PromotionDialog extends Dialog {
@@ -34,9 +34,7 @@ public class PromotionDialog extends Dialog {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 mMove.setPromotion(mPromotionPiece);
-                mGameActivity.getGame().executeMove(mMove);
-                mGameActivity.clearSelection();
-                mGameActivity.updateGameView(true);
+                mGameActivity.executeMove(mMove);
             }
         });
         initializeComponents();

@@ -1,7 +1,7 @@
 package com.thomas.chess.game;
 
-import com.thomas.chess.pieces.Piece;
-import com.thomas.chess.player.Player;
+import com.thomas.chess.game.pieces.Piece;
+import com.thomas.chess.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -26,6 +26,7 @@ public class Move {
     private boolean sameRowFound;
     private boolean sameColumnFound;
 
+    private boolean statesSet;
     private boolean check;
     private boolean checkmate;
     private boolean stalemate;
@@ -103,12 +104,28 @@ public class Move {
         return mDestinationSquare;
     }
 
+    public Square getCastlingKing() {
+        return mCastlingKing;
+    }
+
+    public Square getCastlingRook() {
+        return mCastlingRook;
+    }
+
     public boolean isCheck() {
         return check;
     }
 
     public boolean isCheckmate() {
         return checkmate;
+    }
+
+    public boolean isStatesSet() {
+        return statesSet;
+    }
+
+    public boolean isStalemate() {
+        return stalemate;
     }
 
     public boolean isWhiteWon() {
@@ -128,6 +145,8 @@ public class Move {
         this.checkmate = checkmate;
         this.stalemate = stalemate;
         this.draw = draw;
+
+        statesSet = true;
     }
 
     public void checkAmbiguousMove(Player player) {

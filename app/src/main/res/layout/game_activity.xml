@@ -55,6 +55,7 @@
         android:id="@+id/game_layout"
         android:layout_width="344dp"
         android:layout_height="344dp"
+        android:clipChildren="false"
         android:background="@drawable/board"
         android:orientation="vertical">
 

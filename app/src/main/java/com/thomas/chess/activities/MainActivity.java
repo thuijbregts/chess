@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.thomas.chess.R;
-import com.thomas.chess.game.Utils;
+import com.thomas.chess.utils.Utils;
 
 public class MainActivity extends Activity {
 

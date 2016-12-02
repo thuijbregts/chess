@@ -1,10 +1,10 @@
-package com.thomas.chess.pieces;
+package com.thomas.chess.game.pieces;
 
 import com.thomas.chess.game.Board;
 import com.thomas.chess.game.Game;
 import com.thomas.chess.game.Move;
 import com.thomas.chess.game.Square;
-import com.thomas.chess.game.Utils;
+import com.thomas.chess.utils.Utils;
 
 import java.util.ArrayList;
 

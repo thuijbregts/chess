@@ -1,6 +1,6 @@
 package com.thomas.chess.game;
 
-import com.thomas.chess.pieces.Piece;
+import com.thomas.chess.game.pieces.Piece;
 
 public class Square {
 

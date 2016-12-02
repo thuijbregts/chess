@@ -1,6 +1,6 @@
-package com.thomas.chess.player;
+package com.thomas.chess.game;
 
-import com.thomas.chess.pieces.Piece;
+import com.thomas.chess.game.pieces.Piece;
 
 import java.util.ArrayList;
 
@@ -9,20 +9,26 @@ public abstract class Player {
     protected String mName;
     protected int mColor;
 
+    protected Game mGame;
+
     protected ArrayList<Piece> mAlivePieces;
     protected ArrayList<Piece> mDeadPieces;
 
     public Player(String name, int color) {
         mName = name;
         mColor = color;
-        mAlivePieces = new ArrayList<>();
-        mDeadPieces = new ArrayList<>();
+        initializeArrays();
     }
 
     public Player(int color) {
         mColor = color;
-        mAlivePieces = new ArrayList<>();
-        mDeadPieces = new ArrayList<>();
+        initializeArrays();
+    }
+
+    public void play() {}
+
+    public void setGame(Game game) {
+        mGame = game;
     }
 
     public String getName() {
@@ -31,6 +37,11 @@ public abstract class Player {
 
     public int getColor() {
         return mColor;
+    }
+
+    private void initializeArrays() {
+        mAlivePieces = new ArrayList<>();
+        mDeadPieces = new ArrayList<>();
     }
 
     public boolean hasCheck() {

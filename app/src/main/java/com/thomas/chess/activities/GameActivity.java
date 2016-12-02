@@ -3,6 +3,9 @@ package com.thomas.chess.activities;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -13,11 +16,13 @@ import com.thomas.chess.R;
 import com.thomas.chess.game.Game;
 import com.thomas.chess.game.Move;
 import com.thomas.chess.game.Square;
-import com.thomas.chess.game.Utils;
+import com.thomas.chess.game.p_children.AIPlayer;
+import com.thomas.chess.game.p_children.RealPlayer;
+import com.thomas.chess.utils.Utils;
 import com.thomas.chess.views.HistoryDialog;
 import com.thomas.chess.views.PromotionDialog;
 import com.thomas.chess.views.SquareView;
-import com.thomas.chess.pieces.Piece;
+import com.thomas.chess.game.pieces.Piece;
 
 import java.util.ArrayList;
 
@@ -25,6 +30,7 @@ public class GameActivity extends Activity {
 
     private LinearLayout mGameLayout;
     private Game mGame;
+    private int mGameType;
     private SquareView[][] mSquareViews;
     private SquareView mSelectedSquareView;
 
@@ -35,6 +41,8 @@ public class GameActivity extends Activity {
 
     private ArrayList<SquareMoves> mAnalyzedSquares = new ArrayList<>();
     private ArrayList<Move> mPossibleMoves;
+
+    private boolean moving;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +58,14 @@ public class GameActivity extends Activity {
     }
 
     private void initializeGame(int gameType) {
-        mGame = new Game(gameType);
+        mGameType = gameType;
+        switch (gameType) {
+            case Utils.GAME_SOLO:
+                mGame = new Game(new RealPlayer(Utils.WHITE), new AIPlayer(Utils.BLACK), this);
+                break;
+            default:
+                mGame = new Game(new RealPlayer(Utils.WHITE), new RealPlayer(Utils.BLACK), this);
+        }
         setUpPlayerContainers();
         setUpBoardViews();
         setUpButtons();
@@ -60,7 +75,7 @@ public class GameActivity extends Activity {
         TextView blackName = (TextView) findViewById(R.id.player_pieces_header_black);
         TextView whiteName = (TextView) findViewById(R.id.player_pieces_header_white);
 
-        whiteName.setText(mGame.getWhitePLayer().getName());
+        whiteName.setText(mGame.getWhitePlayer().getName());
         blackName.setText(mGame.getBlackPlayer().getName());
 
         LinearLayout blackContainer = (LinearLayout) findViewById(R.id.player_pieces_container_black);
@@ -87,15 +102,13 @@ public class GameActivity extends Activity {
             layoutParams.weight = 1;
             rowLayout.setLayoutParams(layoutParams);
             for (int j = 0; j < Utils.COLUMNS; j++) {
-                squareView = new SquareView(this);
+                squareView = new SquareView(this, i, j, mGameType);
                 final LinearLayout.LayoutParams squareParams
                         = new LinearLayout.LayoutParams(0, FrameLayout.LayoutParams.MATCH_PARENT);
                 squareParams.weight = 1;
                 squareView.setLayoutParams(squareParams);
 
-                squareView.setRow(i);
-                squareView.setColumn(j);
-                squareView.update();
+                squareView.updateImage();
                 mSquareViews[i][j] = squareView;
 
                 rowLayout.addView(squareView);
@@ -121,7 +134,7 @@ public class GameActivity extends Activity {
             public void onClick(View v) {
                 mGame.cancelMove();
                 clearSelection();
-                updateGameView(true);
+                updateGameView();
             }
         });
 
@@ -130,40 +143,44 @@ public class GameActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if (mGame.getMoves().size() > mGame.getMoveCount()) {
-                    mGame.executeMove(mGame.getMoves().get(mGame.getMoveCount()));
-                    clearSelection();
-                    updateGameView(true);
+                    executeMove(mGame.getMoves().get(mGame.getMoveCount()));
                 }
             }
         });
     }
 
-    public void updateGameView(boolean hasMoved) {
+    public void executeMove(Move move) {
+        clearSelection();
+
+        moving = true;
+        mGame.executeMove(move);
+        animateMove(move);
+    }
+
+    public void updateGameView() {
+        if (getGame().isCheckmate()) {
+            mGameStatus.setText("Checkmate");
+        } else if (getGame().isStalemate()) {
+            mGameStatus.setText("Stalemate");
+        } else if (getGame().isDraw()) {
+            mGameStatus.setText("Draw");
+        } else if (getGame().isCheck()) {
+            mGameStatus.setText("Check");
+        } else {
+            mGameStatus.setText("");
+        }
+        updatePlayerContainers();
+        mAnalyzedSquares.clear();
+
         for (SquareView[] line : mSquareViews) {
             for (SquareView squareView : line) {
-                squareView.update();
+                squareView.updateImage();
             }
-        }
-
-        if (hasMoved) {
-            if (getGame().isCheckmate()) {
-                mGameStatus.setText("Checkmate");
-            } else if (getGame().isStalemate()) {
-                mGameStatus.setText("Stalemate");
-            } else if (getGame().isDraw()) {
-                mGameStatus.setText("Draw");
-            } else if (getGame().isCheck()) {
-                mGameStatus.setText("Check");
-            } else {
-                mGameStatus.setText("");
-            }
-            updatePlayerContainers();
-            mAnalyzedSquares.clear();
         }
     }
 
     private void updatePlayerContainers() {
-        ArrayList<Piece> whiteDeadPieces = mGame.getWhitePLayer().getDeadPieces();
+        ArrayList<Piece> whiteDeadPieces = mGame.getWhitePlayer().getDeadPieces();
         for (int i = 0; i < whiteDeadPieces.size(); i++) {
             Utils.setImageViewForPiece(mWhiteDeadPieces.get(i), whiteDeadPieces.get(i));
         }
@@ -181,8 +198,17 @@ public class GameActivity extends Activity {
     }
 
     public void clearSelection() {
-        mSelectedSquareView = null;
-        mPossibleMoves = null;
+        if (mSelectedSquareView != null) {
+            mSelectedSquareView.clearBackground();
+            if (mPossibleMoves != null) {
+                for (Move move : mPossibleMoves) {
+                    Square destination = move.getDestinationSquare();
+                    mSquareViews[destination.getRow()][destination.getColumn()].clearBackground();
+                }
+            }
+            mSelectedSquareView = null;
+            mPossibleMoves = null;
+        }
     }
 
     public void choosePromotionPiece(Move move) {
@@ -195,8 +221,8 @@ public class GameActivity extends Activity {
         return mGame;
     }
 
-    public ArrayList<Move> getPossibleMoves() {
-        return mPossibleMoves;
+    public boolean isMoving() {
+        return moving;
     }
 
     public void setPossibleMoves(ArrayList<Move> possibleMoves) {
@@ -221,8 +247,15 @@ public class GameActivity extends Activity {
         return mSelectedSquareView;
     }
 
-    public void setSelectedSquareView(SquareView selectedSquareView) {
+    public void updateSelectedSquare(SquareView selectedSquareView) {
         mSelectedSquareView = selectedSquareView;
+        mSelectedSquareView.setSelected();
+        if (mPossibleMoves != null) {
+            for (Move move : mPossibleMoves) {
+                Square destination = move.getDestinationSquare();
+                mSquareViews[destination.getRow()][destination.getColumn()].setPossibleMove();
+            }
+        }
     }
 
     public Move getMoveForSquare(Square square) {
@@ -235,6 +268,124 @@ public class GameActivity extends Activity {
             }
         }
         return null;
+    }
+
+    public void animateMove(Move move) {
+        switch (move.getMoveType()) {
+            case Utils.MOVE_TYPE_CASTLING:
+                animateCastling(move);
+                break;
+            default:
+                animateRegular(move);
+        }
+    }
+
+    private void animateCastling(Move move) {
+        SquareView sourceSquare = mSquareViews[move.getSourceSquare().getRow()]
+                [move.getSourceSquare().getColumn()];
+        SquareView destinationSquare = mSquareViews[move.getCastlingKing().getRow()]
+                [move.getCastlingKing().getColumn()];
+        int[] coord = new int[2];
+        sourceSquare.getLocationOnScreen(coord);
+        int sourceX = coord[0];
+        int sourceY = coord[1];
+        destinationSquare.getLocationOnScreen(coord);
+        int destinationX = coord[0];
+        int destinationY = coord[1];
+        TranslateAnimation animation = new TranslateAnimation(Animation.ABSOLUTE, 0,
+                Animation.ABSOLUTE, destinationX-sourceX,
+                Animation.ABSOLUTE, 0,
+                Animation.ABSOLUTE, destinationY-sourceY);
+        animation.setDuration(Utils.PIECE_ANIMATION_DURATION);
+        animation.setRepeatCount(0);
+        animation.setZAdjustment(Animation.ZORDER_TOP);
+        animation.setFillAfter(false);
+
+        sourceSquare.startAnimation(animation);
+
+        sourceSquare = mSquareViews[move.getDestinationSquare().getRow()]
+                [move.getDestinationSquare().getColumn()];
+        destinationSquare = mSquareViews[move.getCastlingRook().getRow()]
+                [move.getCastlingRook().getColumn()];
+        sourceSquare.getLocationOnScreen(coord);
+
+        sourceX = coord[0];
+        sourceY = coord[1];
+        destinationSquare.getLocationOnScreen(coord);
+        destinationX = coord[0];
+        destinationY = coord[1];
+        animation = new TranslateAnimation(Animation.ABSOLUTE, 0,
+                Animation.ABSOLUTE, destinationX-sourceX,
+                Animation.ABSOLUTE, 0,
+                Animation.ABSOLUTE, destinationY-sourceY);
+        animation.setDuration(Utils.PIECE_ANIMATION_DURATION);
+        animation.setRepeatCount(0);
+        animation.setZAdjustment(Animation.ZORDER_TOP);
+        animation.setFillAfter(false);
+
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                moving = false;
+                updateGameView();
+                mGame.getCurrentPlayer().play();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        sourceSquare.startAnimation(animation);
+    }
+
+    private void animateRegular(Move move) {
+        SquareView sourceSquare = mSquareViews[move.getSourceSquare().getRow()]
+                [move.getSourceSquare().getColumn()];
+        SquareView destinationSquare = mSquareViews[move.getDestinationSquare().getRow()]
+                [move.getDestinationSquare().getColumn()];
+        int[] coord = new int[2];
+        sourceSquare.getLocationOnScreen(coord);
+        int sourceX = coord[0];
+        int sourceY = coord[1];
+        destinationSquare.getLocationOnScreen(coord);
+        int destinationX = coord[0];
+        int destinationY = coord[1];
+        TranslateAnimation animation = new TranslateAnimation(Animation.ABSOLUTE, 0,
+                Animation.ABSOLUTE, destinationX-sourceX,
+                Animation.ABSOLUTE, 0,
+                Animation.ABSOLUTE, destinationY-sourceY);
+        animation.setDuration(Utils.PIECE_ANIMATION_DURATION);
+        animation.setRepeatCount(0);
+        animation.setZAdjustment(Animation.ZORDER_TOP);
+        animation.setFillAfter(false);
+
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                moving = false;
+                updateGameView();
+                mGame.getCurrentPlayer().play();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        sourceSquare.startAnimation(animation);
     }
 
     private class SquareMoves {

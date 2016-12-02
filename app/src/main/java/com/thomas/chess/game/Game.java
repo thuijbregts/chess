@@ -1,17 +1,20 @@
 package com.thomas.chess.game;
 
-import com.thomas.chess.pieces.Piece;
-import com.thomas.chess.player.AIPlayer;
-import com.thomas.chess.player.Player;
-import com.thomas.chess.player.RealPlayer;
+import com.thomas.chess.activities.GameActivity;
+import com.thomas.chess.game.pieces.Piece;
+import com.thomas.chess.game.p_children.AIPlayer;
+import com.thomas.chess.game.p_children.RealPlayer;
+import com.thomas.chess.utils.Utils;
 
 import java.util.ArrayList;
 
 public class Game {
 
-    private int mGameType;
+    private GameActivity mGameActivity;
+
     private Board mBoard;
-    private Player[] mPlayers;
+    private Player mWhitePlayer;
+    private Player mBlackPlayer;
     private Player mCurrentPlayer;
 
     private ArrayList<Move> mMoves;
@@ -22,33 +25,18 @@ public class Game {
     private boolean stalemate;
     private boolean draw;
 
-    private boolean waitForOpponent;
-
-    public Game(int gameType) {
-        mGameType = gameType;
+    public Game(Player whitePlayer, Player blackPlayer, GameActivity gameActivity) {
+        mGameActivity = gameActivity;
+        mWhitePlayer = mCurrentPlayer = whitePlayer;
+        mBlackPlayer = blackPlayer;
+        mWhitePlayer.setGame(this);
+        mBlackPlayer.setGame(this);
         initializeGame();
     }
 
     public void initializeGame() {
         mBoard = new Board(this);
         mMoves = new ArrayList<>();
-        mPlayers = new Player[2];
-
-        switch (mGameType) {
-            case Utils.GAME_SOLO:
-                mPlayers[0] = mCurrentPlayer = new RealPlayer("You", Utils.WHITE);
-                mPlayers[1] = new AIPlayer(Utils.BLACK);
-                break;
-            case Utils.GAME_ONLINE:
-                mPlayers[0] = mCurrentPlayer = new RealPlayer("1", Utils.WHITE);
-                mPlayers[1] = new RealPlayer("2", Utils.BLACK);
-                break;
-            case Utils.GAME_TWO_PLAYERS:
-                mPlayers[0] = mCurrentPlayer = new RealPlayer("Player 1", Utils.WHITE);
-                mPlayers[1] = new RealPlayer("Player 2", Utils.BLACK);
-                break;
-        }
-
         mBoard.placePieces();
     }
 
@@ -78,7 +66,7 @@ public class Game {
             }
         }
 
-        mCurrentPlayer = (mPlayers[0].equals(mCurrentPlayer) ? mPlayers[1] : mPlayers[0]);
+        mCurrentPlayer = (mWhitePlayer.equals(mCurrentPlayer) ? mBlackPlayer : mWhitePlayer);
 
         Piece deadPiece = move.getDeadPiece();
         if (deadPiece != null) {
@@ -115,7 +103,7 @@ public class Game {
                 mCurrentPlayer.getAlivePieces().add(deadPiece);
             }
 
-            mCurrentPlayer = (mPlayers[0].equals(mCurrentPlayer) ? mPlayers[1] : mPlayers[0]);
+            mCurrentPlayer = (mWhitePlayer.equals(mCurrentPlayer) ? mBlackPlayer : mWhitePlayer);
 
             move.unmake();
 
@@ -125,15 +113,21 @@ public class Game {
     }
 
     private void updateGameStatus() {
-        check = getOpponent(mCurrentPlayer.getColor()).hasCheck();
-        boolean hasNoLegalMoves = mCurrentPlayer.hasNoLegalMove();
-        checkmate = hasNoLegalMoves && check;
-        stalemate = hasNoLegalMoves && !check;
-        draw = false;
+        Move lastMove = mMoves.get(mMoveCount-1);
+        if (!lastMove.isStatesSet()) {
+            check = getOpponent(mCurrentPlayer.getColor()).hasCheck();
+            boolean hasNoLegalMoves = mCurrentPlayer.hasNoLegalMove();
+            checkmate = hasNoLegalMoves && check;
+            stalemate = hasNoLegalMoves && !check;
+            draw = false;
 
-        mMoves.get(mMoveCount-1).setGameStates(check, checkmate, stalemate, draw);
-
-        updateWaitForOpponent();
+            lastMove.setGameStates(check, checkmate, stalemate, draw);
+        } else {
+            check = lastMove.isCheck();
+            checkmate = lastMove.isCheckmate();
+            stalemate = lastMove.isStalemate();
+            draw = lastMove.isDraw();
+        }
     }
 
     private void resumePreviousGameStatus() {
@@ -144,28 +138,18 @@ public class Game {
             Move move = mMoves.get(mMoveCount-1);
             check = move.isCheck();
         }
-        updateWaitForOpponent();
-    }
-
-    public void updateWaitForOpponent() {
-        waitForOpponent = (mGameType != Utils.GAME_TWO_PLAYERS
-                && mCurrentPlayer.getColor() == Utils.BLACK);
-    }
-
-    public Player[] getPlayers() {
-        return mPlayers;
     }
 
     public Player getOpponent(int color) {
-        return (mPlayers[0].getColor() == color ? mPlayers[1] : mPlayers[0]);
+        return color == Utils.WHITE ? mBlackPlayer : mWhitePlayer;
     }
 
-    public Player getWhitePLayer() {
-        return (mPlayers[0].getColor() == Utils.WHITE ? mPlayers[0] : mPlayers[1]);
+    public Player getWhitePlayer() {
+        return mWhitePlayer;
     }
 
     public Player getBlackPlayer() {
-        return (mPlayers[0].getColor() == Utils.WHITE ? mPlayers[1] : mPlayers[0]);
+        return mBlackPlayer;
     }
 
     public int getMoveCount() {
@@ -196,7 +180,7 @@ public class Game {
         return stalemate;
     }
 
-    public boolean isWaitForOpponent() {
-        return waitForOpponent;
+    public GameActivity getGameActivity() {
+        return mGameActivity;
     }
 }

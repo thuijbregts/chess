@@ -1,15 +1,15 @@
-package com.thomas.chess.game;
+package com.thomas.chess.utils;
 
 import android.widget.ImageView;
 
 import com.thomas.chess.R;
-import com.thomas.chess.pieces.Bishop;
-import com.thomas.chess.pieces.King;
-import com.thomas.chess.pieces.Knight;
-import com.thomas.chess.pieces.Pawn;
-import com.thomas.chess.pieces.Piece;
-import com.thomas.chess.pieces.Queen;
-import com.thomas.chess.pieces.Rook;
+import com.thomas.chess.game.pieces.Bishop;
+import com.thomas.chess.game.pieces.King;
+import com.thomas.chess.game.pieces.Knight;
+import com.thomas.chess.game.pieces.Pawn;
+import com.thomas.chess.game.pieces.Piece;
+import com.thomas.chess.game.pieces.Queen;
+import com.thomas.chess.game.pieces.Rook;
 
 public class Utils {
     public static final int WHITE = 0;
@@ -19,6 +19,7 @@ public class Utils {
     public static final int GAME_SOLO = 0;
     public static final int GAME_ONLINE = 1;
     public static final int GAME_TWO_PLAYERS = 2;
+    public static final int GAME_REVIEW = 3;
 
     public static final int ROWS = 8;
     public static final int COLUMNS = 8;
@@ -27,6 +28,8 @@ public class Utils {
     public static final int MOVE_TYPE_PASSANT = 1;
     public static final int MOVE_TYPE_CASTLING = 2;
     public static final int MOVE_TYPE_PROMOTION = 3;
+
+    public static final int PIECE_ANIMATION_DURATION = 700;
     
     public static void setImageViewForPiece(ImageView imageView, Piece piece) {
         if (piece instanceof Pawn) {

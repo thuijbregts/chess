@@ -1,16 +1,16 @@
-package com.thomas.chess.pieces;
+package com.thomas.chess.game.pieces;
 
-import com.thomas.chess.game.Board;
 import com.thomas.chess.game.Game;
 import com.thomas.chess.game.Move;
 import com.thomas.chess.game.Square;
-import com.thomas.chess.game.Utils;
+import com.thomas.chess.utils.Utils;
 
 import java.util.ArrayList;
 
-public class Rook extends Piece {
+public class Bishop extends Piece {
 
-    public Rook(int color, Square square, Game game) {
+
+    public Bishop(int color, Square square, Game game) {
         super(color, square, game);
     }
 
@@ -24,8 +24,10 @@ public class Rook extends Piece {
         int row = mSquare.getRow();
         int column = mSquare.getColumn();
 
-        for (int i = row+1; i < Utils.ROWS; i++) {
-            square = board[i][column];
+        int maxMoves = (row < column ? row : column);
+        int i = 1;
+        while (i <= maxMoves) {
+            square = board[row-i][column-i];
             if (square.isEmpty()) {
                 possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
                         mSquare,
@@ -38,10 +40,13 @@ public class Rook extends Piece {
                 }
                 break;
             }
+            i++;
         }
 
-        for (int i = row-1; i >= 0; i--) {
-            square = board[i][column];
+        maxMoves = ((Utils.ROWS-1)-row < column ? (Utils.ROWS-1)-row : column);
+        i = 1;
+        while (i <= maxMoves) {
+            square = board[row+i][column-i];
             if (square.isEmpty()) {
                 possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
                         mSquare,
@@ -54,10 +59,14 @@ public class Rook extends Piece {
                 }
                 break;
             }
+            i++;
         }
 
-        for (int i = column+1; i < Utils.COLUMNS; i++) {
-            square = board[row][i];
+        maxMoves = ((Utils.ROWS-1)-row < (Utils.COLUMNS-1)-column ?
+                (Utils.ROWS-1)-row : (Utils.COLUMNS-1)-column);
+        i = 1;
+        while (i <= maxMoves) {
+            square = board[row+i][column+i];
             if (square.isEmpty()) {
                 possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
                         mSquare,
@@ -70,10 +79,13 @@ public class Rook extends Piece {
                 }
                 break;
             }
+            i++;
         }
 
-        for (int i = column-1; i >= 0; i--) {
-            square = board[row][i];
+        maxMoves = (row < (Utils.COLUMNS-1)-column ? row : (Utils.COLUMNS-1)-column);
+        i = 1;
+        while (i <= maxMoves) {
+            square = board[row-i][column+i];
             if (square.isEmpty()) {
                 possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
                         mSquare,
@@ -86,6 +98,7 @@ public class Rook extends Piece {
                 }
                 break;
             }
+            i++;
         }
 
         if (!verification) {
@@ -93,5 +106,6 @@ public class Rook extends Piece {
         }
         return possibleMoves;
     }
+
 
 }
