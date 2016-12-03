@@ -31,9 +31,11 @@ public class Move {
     private boolean checkmate;
     private boolean stalemate;
 
+    private boolean surrender;
     private boolean whiteWon;
     private boolean blackWon;
-    private boolean draw;
+    private Draw mDraw;
+    private Draw mAllowedDraw;
 
     public Move(int moveType, Square sourceSquare, Square destinationSquare) {
         mMoveType = moveType;
@@ -136,15 +138,35 @@ public class Move {
         return blackWon;
     }
 
-    public boolean isDraw() {
-        return draw;
+    public boolean isSurrender() {
+        return surrender;
     }
 
-    public void setGameStates(boolean check, boolean checkmate, boolean stalemate, boolean draw) {
+    public void setBlackWon(boolean blackWon) {
+        surrender = true;
+        this.blackWon = blackWon;
+    }
+
+    public void setWhiteWon(boolean whiteWon) {
+        surrender = true;
+        this.whiteWon = whiteWon;
+    }
+
+    public Draw getDraw() {
+        return mDraw;
+    }
+
+    public Draw getAllowedDraw() {
+        return mAllowedDraw;
+    }
+
+    public void setGameStates(boolean check, boolean checkmate, boolean stalemate,
+                              Draw draw, Draw allowedDraw) {
         this.check = check;
         this.checkmate = checkmate;
         this.stalemate = stalemate;
-        this.draw = draw;
+        mDraw = draw;
+        mAllowedDraw = allowedDraw;
 
         statesSet = true;
     }
@@ -189,7 +211,7 @@ public class Move {
     private void makeNormalMove() {
         mDeadPiece = mDestinationSquare.getPiece();
         movePiece(mDestinationSquare, mMovedPiece);
-        mSourceSquare.setPiece(null);
+        mSourceSquare.clear();
         mMovedPiece.addMovement();
     }
 
@@ -203,15 +225,15 @@ public class Move {
     private void makeEnPassantMove() {
         mDeadPiece = mEnPassantSquare.getPiece();
         movePiece(mDestinationSquare, mMovedPiece);
-        mSourceSquare.setPiece(null);
-        mEnPassantSquare.setPiece(null);
+        mSourceSquare.clear();
+        mEnPassantSquare.clear();
         mMovedPiece.addMovement();
     }
 
     private void unmakeEnPassantMove() {
         mEnPassantSquare.setPiece(mDeadPiece);
         movePiece(mSourceSquare, mMovedPiece);
-        mDestinationSquare.setPiece(null);
+        mDestinationSquare.clear();
         mMovedPiece.removeMovement();
         mDeadPiece = null;
     }
@@ -223,7 +245,7 @@ public class Move {
         } else {
             movePiece(mDestinationSquare, mPromotedPiece);
         }
-        mSourceSquare.setPiece(null);
+        mSourceSquare.clear();
     }
 
     private void unmakePromotionMove() {
@@ -236,8 +258,8 @@ public class Move {
         Piece rook = mDestinationSquare.getPiece();
         movePiece(mCastlingKing, mMovedPiece);
         movePiece(mCastlingRook, rook);
-        mSourceSquare.setPiece(null);
-        mDestinationSquare.setPiece(null);
+        mSourceSquare.clear();
+        mDestinationSquare.clear();
 
         //TWICE BECAUSE KING MOVES TWICE DURING CASTLING
         mMovedPiece.addMovement();
@@ -250,8 +272,8 @@ public class Move {
         Piece rook = mCastlingRook.getPiece();
         movePiece(mSourceSquare, mMovedPiece);
         movePiece(mDestinationSquare, rook);
-        mCastlingRook.setPiece(null);
-        mCastlingKing.setPiece(null);
+        mCastlingRook.clear();
+        mCastlingKing.clear();
 
         //TWICE BECAUSE KING MOVES TWICE DURING CASTLING
         mMovedPiece.removeMovement();
@@ -288,7 +310,7 @@ public class Move {
             result += "1-0";
         } else if (blackWon) {
             result += "0-1";
-        } else if (draw) {
+        } else if (mDraw != null) {
             result += "1⁄2– 1⁄2";
         }
         return result;

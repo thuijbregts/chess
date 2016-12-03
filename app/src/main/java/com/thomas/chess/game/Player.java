@@ -62,16 +62,8 @@ public abstract class Player {
         return true;
     }
 
-    public void setAlivePieces(ArrayList<Piece> alivePieces) {
-        this.mAlivePieces = alivePieces;
-    }
-
     public ArrayList<Piece> getAlivePieces() {
         return mAlivePieces;
-    }
-
-    public void setDeadPieces(ArrayList<Piece> deadPieces) {
-        this.mDeadPieces = deadPieces;
     }
 
     public ArrayList<Piece> getDeadPieces() {

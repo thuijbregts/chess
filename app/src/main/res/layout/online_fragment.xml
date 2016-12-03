@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/FragmentButtonsContainer">
+
+    <Button
+        android:id="@+id/game_surrender"
+        style="@style/FragmentButtons" />
+
+    <Button
+        android:id="@+id/game_force_draw"
+        style="@style/FragmentButtons"/>
+
+
+    <Button
+        android:id="@+id/game_draw"
+        style="@style/FragmentButtons" />
+
+    <Button
+        android:id="@+id/game_show_history"
+        style="@style/FragmentButtons" />
+
+</LinearLayout>

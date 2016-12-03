@@ -55,4 +55,20 @@
         <item name="android:layout_marginLeft">2dp</item>
     </style>
 
+    <!--Game activity fragment-->
+
+    <style name="FragmentButtonsContainer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">right</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:paddingTop">8dp</item>
+    </style>
+
+    <style name="FragmentButtons">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_marginRight">16dp</item>
+    </style>
 </resources>

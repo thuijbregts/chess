@@ -8,4 +8,10 @@
 
     <!--Game View-->
     <string name="game_history">History</string>
+
+    <!--Game States-->
+    <string name="state_checkmate">Checkmate</string>
+    <string name="state_stalemate">Stalemate</string>
+    <string name="state_check">Check</string>
+    <string name="state_draw">Draw</string>
 </resources>

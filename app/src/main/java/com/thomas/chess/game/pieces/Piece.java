@@ -1,5 +1,7 @@
 package com.thomas.chess.game.pieces;
 
+import android.view.MotionEvent;
+
 import com.thomas.chess.game.Game;
 import com.thomas.chess.game.Move;
 import com.thomas.chess.game.Square;
@@ -7,6 +9,7 @@ import com.thomas.chess.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public abstract class Piece {
 
@@ -48,9 +51,8 @@ public abstract class Piece {
     }
 
     protected void removeCheckMoves(ArrayList<Move> possibleMoves) {
-
         Move move;
-        ArrayList<Piece> opponentsPieces = mGame.getOpponent(mColor).getAlivePieces();
+        ArrayList<Piece> opponentPieces = mGame.getOpponent(mColor).getAlivePieces();
 
         Iterator<Move> iterator = possibleMoves.iterator();
         while (iterator.hasNext()) {
@@ -59,7 +61,7 @@ public abstract class Piece {
             if (move.getMoveType() != Utils.MOVE_TYPE_CASTLING) {
                 move.make();
 
-                for (Piece piece : opponentsPieces) {
+                for (Piece piece : opponentPieces) {
                     if (!piece.equals(move.getDeadPiece()) && piece.hasCheck()) {
                         iterator.remove();
                         break;
@@ -82,4 +84,17 @@ public abstract class Piece {
         return false;
     }
 
+    public boolean isThreatened() {
+        List<Piece> opponentPieces = mGame.getOpponent(mColor).getAlivePieces();
+        List<Move> moves;
+        for (Piece piece : opponentPieces) {
+            moves = piece.getMoves(false);
+            for (Move move : moves) {
+                if (move.getDestinationSquare().equals(mSquare)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

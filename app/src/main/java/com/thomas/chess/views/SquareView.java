@@ -70,7 +70,7 @@ public class SquareView extends ImageView{
                         if (move.getMoveType() == Utils.MOVE_TYPE_PROMOTION) {
                             mGameActivity.choosePromotionPiece(move);
                         } else {
-                            mGameActivity.executeMove(move);
+                            mGameActivity.executeMove(move, true);
                         }
                     } else {
                         treatSquare(square);
@@ -80,7 +80,7 @@ public class SquareView extends ImageView{
         }
 
         private boolean isValid(Square square) {
-            if (mGameActivity.isMoving()) {
+            if (mGameActivity.isAnimating()) {
                 return false;
             }
             if (square.isEmpty()) {
@@ -115,7 +115,7 @@ public class SquareView extends ImageView{
 
         private boolean canClick() {
             switch (mGameType) {
-                case Utils.GAME_TWO_PLAYERS:
+                case Utils.GAME_VERSUS:
                     return true;
                 case Utils.GAME_ONLINE:
                     //TODO online game

@@ -18,7 +18,7 @@ public class Utils {
     public static final String INTENT_GAME_TYPE = "GAME_TYPE";
     public static final int GAME_SOLO = 0;
     public static final int GAME_ONLINE = 1;
-    public static final int GAME_TWO_PLAYERS = 2;
+    public static final int GAME_VERSUS = 2;
     public static final int GAME_REVIEW = 3;
 
     public static final int ROWS = 8;

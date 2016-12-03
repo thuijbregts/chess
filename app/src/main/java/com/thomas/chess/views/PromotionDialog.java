@@ -34,7 +34,7 @@ public class PromotionDialog extends Dialog {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 mMove.setPromotion(mPromotionPiece);
-                mGameActivity.executeMove(mMove);
+                mGameActivity.executeMove(mMove, true);
             }
         });
         initializeComponents();

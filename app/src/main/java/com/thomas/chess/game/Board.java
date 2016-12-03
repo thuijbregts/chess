@@ -17,9 +17,11 @@ public class Board {
     public Board(Game game) {
         mGame = game;
         mSquares = new Square[Utils.ROWS][Utils.COLUMNS];
+        int color = Square.DARK;
         for (int i = 0; i < Utils.ROWS; i++) {
             for (int j = 0; j < Utils.COLUMNS; j++) {
-                mSquares[i][j] = new Square(i, j);
+                mSquares[i][j] = new Square(i, j, color);
+                color = (color == Square.DARK) ? Square.LIGHT : Square.DARK;
             }
         }
     }

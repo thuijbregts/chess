@@ -22,6 +22,6 @@ public class AIPlayer extends Player {
             allMoves.addAll(piece.getMoves(false));
         }
 
-        mGame.getGameActivity().executeMove(allMoves.get((int)Math.floor(Math.random()*allMoves.size())));
+        mGame.getGameActivity().executeMove(allMoves.get((int)Math.floor(Math.random()*allMoves.size())), true);
     }
 }

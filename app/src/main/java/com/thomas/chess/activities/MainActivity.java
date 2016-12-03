@@ -35,7 +35,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, GameActivity.class);
-                intent.putExtra(Utils.INTENT_GAME_TYPE, Utils.GAME_TWO_PLAYERS);
+                intent.putExtra(Utils.INTENT_GAME_TYPE, Utils.GAME_VERSUS);
                 startActivity(intent);
             }
         });
