@@ -10,8 +10,11 @@ import java.util.ArrayList;
 
 public class King extends Piece {
 
+    public static final int VALUE = 100;
+
     public King(int color, Square square, Game game) {
         super(color, square, game);
+        mValue = VALUE;
     }
 
     @Override
@@ -36,12 +39,12 @@ public class King extends Piece {
                 }
                 square = board[row+i][column+j];
                 if (square.isEmpty()) {
-                    possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
+                    possibleMoves.add(new Move(Move.TYPE_NORMAL,
                             mSquare,
                             square));
                 }
                 else if (!square.isEmpty() && square.getPiece().getColor() != mColor) {
-                    possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
+                    possibleMoves.add(new Move(Move.TYPE_NORMAL,
                             mSquare,
                             square));
                 }
@@ -54,14 +57,14 @@ public class King extends Piece {
                 castlingBoard = Board.horizontalMirror(board);
             }
             if (canCastlingRight(castlingBoard)) {
-                move = new Move(Utils.MOVE_TYPE_CASTLING,
+                move = new Move(Move.TYPE_CASTLING,
                         mSquare,
                         castlingBoard[0][7]);
                 possibleMoves.add(move);
                 move.setCastling(castlingBoard[0][6], castlingBoard[0][5]);
             }
             if (canCastlingLeft(castlingBoard)) {
-                move = new Move(Utils.MOVE_TYPE_CASTLING,
+                move = new Move(Move.TYPE_CASTLING,
                         mSquare,
                         castlingBoard[0][0]);
                 possibleMoves.add(move);

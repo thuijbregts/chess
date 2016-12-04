@@ -12,24 +12,29 @@ import com.thomas.chess.R;
 import com.thomas.chess.activities.GameActivity;
 import com.thomas.chess.game.Game;
 import com.thomas.chess.game.p_children.RealPlayer;
-import com.thomas.chess.views.HistoryDialog;
+import com.thomas.chess.views.ScoreSheetDialog;
 
 public class OnlineFragment extends Fragment {
 
+    private GameActivity mGameActivity;
+    private Game mGame;
     private View mView;
-    private Context mContext;
+
+    private Button mForceDrawButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.online_fragment, container, false);
-        mContext = getContext();
         return mView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        mGameActivity = (GameActivity) getActivity();
+        mGame = mGameActivity.getGame();
         initializeButtons();
+        //updateButtons();
     }
 
     @Override
@@ -38,42 +43,19 @@ public class OnlineFragment extends Fragment {
     }
 
     private void initializeButtons() {
-        final GameActivity gameActivity = (GameActivity) getActivity();
-        final Game game = gameActivity.getGame();
-        Button showHistory = (Button) mView.findViewById(R.id.game_show_history);
-        showHistory.setOnClickListener(new View.OnClickListener() {
+        Button scoreSheet = (Button) mView.findViewById(R.id.game_show_score_sheet);
+        scoreSheet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HistoryDialog dialog = new HistoryDialog(gameActivity);
-                dialog.setMoves(game.getMoves(), game.getMoveCount());
+                ScoreSheetDialog dialog = new ScoreSheetDialog(mGameActivity);
+                dialog.setMoves(mGame.getMoves(), mGame.getMoveCount());
                 dialog.show();
             }
         });
+    }
 
-        Button undo = (Button) mView.findViewById(R.id.game_undo);
-        undo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (game.getCurrentPlayer() instanceof RealPlayer) {
-                    game.cancelMove();
-                    game.cancelMove();
-                    gameActivity.clearSelection();
-                    gameActivity.updateGameView();
-                }
-            }
-        });
-
-        Button redo = (Button) mView.findViewById(R.id.game_redo);
-        redo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (game.getCurrentPlayer() instanceof RealPlayer) {
-                    if (game.getMoves().size() > game.getMoveCount()) {
-                        game.executeMove(game.getMoves().get(game.getMoveCount()));
-                        gameActivity.executeMove(game.getMoves().get(game.getMoveCount()), false);
-                    }
-                }
-            }
-        });
+    //TODO code for online
+    public void updateButtons() {
+        mForceDrawButton.setEnabled(mGame.getCurrentPlayer().canClaimDraw());
     }
 }

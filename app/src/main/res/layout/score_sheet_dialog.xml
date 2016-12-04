@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:orientation="vertical"
+android:layout_width="256dp"
+android:layout_height="wrap_content">
+
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:textSize="18sp"
+    android:gravity="center"
+    android:background="@color/dialog_header"
+    android:text="@string/score_sheet"/>
+
+<ListView
+    android:id="@+id/game_score_sheet_list"
+    android:layout_width="match_parent"
+    android:layout_height="400dp">
+</ListView>
+
+</LinearLayout>

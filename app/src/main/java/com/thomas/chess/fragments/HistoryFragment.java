@@ -11,24 +11,30 @@ import android.widget.Button;
 import com.thomas.chess.R;
 import com.thomas.chess.activities.GameActivity;
 import com.thomas.chess.game.Game;
-import com.thomas.chess.views.HistoryDialog;
+import com.thomas.chess.views.ScoreSheetDialog;
 
 public class HistoryFragment extends Fragment {
 
+    private GameActivity mGameActivity;
+    private Game mGame;
     private View mView;
-    private Context mContext;
+
+    private Button mUndoButton;
+    private Button mRedoButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.history_fragment, container, false);
-        mContext = getContext();
         return mView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        mGameActivity = (GameActivity) getActivity();
+        mGame = mGameActivity.getGame();
         initializeButtons();
+        updateButtons();
     }
 
     @Override
@@ -37,36 +43,39 @@ public class HistoryFragment extends Fragment {
     }
 
     private void initializeButtons() {
-        final GameActivity gameActivity = (GameActivity) getActivity();
-        final Game game = gameActivity.getGame();
-        Button showHistory = (Button) mView.findViewById(R.id.game_show_history);
-        showHistory.setOnClickListener(new View.OnClickListener() {
+        Button mScoreSheetButton = (Button) mView.findViewById(R.id.game_show_score_sheet);
+        mScoreSheetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HistoryDialog dialog = new HistoryDialog(gameActivity);
-                dialog.setMoves(game.getMoves(), game.getMoveCount());
+                ScoreSheetDialog dialog = new ScoreSheetDialog(mGameActivity);
+                dialog.setMoves(mGame.getMoves(), mGame.getMoveCount());
                 dialog.show();
             }
         });
 
-        Button undo = (Button) mView.findViewById(R.id.game_undo);
-        undo.setOnClickListener(new View.OnClickListener() {
+        mUndoButton = (Button) mView.findViewById(R.id.game_undo);
+        mUndoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                game.cancelMove();
-                gameActivity.clearSelection();
-                gameActivity.updateGameView();
+                mGame.cancelMove();
+                mGameActivity.clearSelection();
+                mGameActivity.updateGameView();
             }
         });
 
-        Button redo = (Button) mView.findViewById(R.id.game_redo);
-        redo.setOnClickListener(new View.OnClickListener() {
+        mRedoButton = (Button) mView.findViewById(R.id.game_redo);
+        mRedoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (game.getMoves().size() > game.getMoveCount()) {
-                    gameActivity.executeMove(game.getMoves().get(game.getMoveCount()), false);
+                if (mGame.getMoves().size() > mGame.getMoveCount()) {
+                    mGameActivity.executeMove(mGame.getMoves().get(mGame.getMoveCount()), false);
                 }
             }
         });
+    }
+    
+    public void updateButtons() {
+        mUndoButton.setEnabled(mGame.getMoveCount() != 0);
+        mRedoButton.setEnabled(mGame.getMoveCount() < mGame.getMoves().size());
     }
 }

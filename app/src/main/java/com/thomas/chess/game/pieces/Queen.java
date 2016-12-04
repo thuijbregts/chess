@@ -8,8 +8,11 @@ import java.util.ArrayList;
 
 public class Queen extends Piece {
 
+    public static final int VALUE = 8;
+
     public Queen(int color, Square square, Game game) {
         super(color, square, game);
+        mValue = VALUE;
     }
 
     @Override

@@ -9,9 +9,11 @@ import java.util.ArrayList;
 
 public class Bishop extends Piece {
 
+    public static final int VALUE = 3;
 
     public Bishop(int color, Square square, Game game) {
         super(color, square, game);
+        mValue = VALUE;
     }
 
     @Override
@@ -29,12 +31,12 @@ public class Bishop extends Piece {
         while (i <= maxMoves) {
             square = board[row-i][column-i];
             if (square.isEmpty()) {
-                possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
+                possibleMoves.add(new Move(Move.TYPE_NORMAL,
                         mSquare,
                         square));
             } else {
                 if (square.getPiece().getColor() != mColor) {
-                    possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
+                    possibleMoves.add(new Move(Move.TYPE_NORMAL,
                             mSquare,
                             square));
                 }
@@ -48,12 +50,12 @@ public class Bishop extends Piece {
         while (i <= maxMoves) {
             square = board[row+i][column-i];
             if (square.isEmpty()) {
-                possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
+                possibleMoves.add(new Move(Move.TYPE_NORMAL,
                         mSquare,
                         square));
             } else {
                 if (square.getPiece().getColor() != mColor) {
-                    possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
+                    possibleMoves.add(new Move(Move.TYPE_NORMAL,
                             mSquare,
                             square));
                 }
@@ -68,12 +70,12 @@ public class Bishop extends Piece {
         while (i <= maxMoves) {
             square = board[row+i][column+i];
             if (square.isEmpty()) {
-                possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
+                possibleMoves.add(new Move(Move.TYPE_NORMAL,
                         mSquare,
                         square));
             } else {
                 if (square.getPiece().getColor() != mColor) {
-                    possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
+                    possibleMoves.add(new Move(Move.TYPE_NORMAL,
                             mSquare,
                             square));
                 }
@@ -87,12 +89,12 @@ public class Bishop extends Piece {
         while (i <= maxMoves) {
             square = board[row-i][column+i];
             if (square.isEmpty()) {
-                possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
+                possibleMoves.add(new Move(Move.TYPE_NORMAL,
                         mSquare,
                         square));
             } else {
                 if (square.getPiece().getColor() != mColor) {
-                    possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
+                    possibleMoves.add(new Move(Move.TYPE_NORMAL,
                             mSquare,
                             square));
                 }

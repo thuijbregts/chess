@@ -2,6 +2,7 @@ package com.thomas.chess.views;
 
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -34,7 +35,7 @@ public class SquareView extends ImageView{
         }
     }
 
-    public void updateImage() {
+    public void update() {
         Square square = mGameActivity.getGame().getBoard().getSquares()[mRow][mColumn];
 
         if (square.isEmpty()) {
@@ -43,14 +44,20 @@ public class SquareView extends ImageView{
             Piece piece = square.getPiece();
             Utils.setImageViewForPiece(this, piece);
         }
+
+        clearBackground();
+    }
+
+    public void setLastMove() {
+        setBackgroundResource(R.drawable.moved_square_frame);
     }
 
     public void setSelected() {
-        setBackgroundColor(ContextCompat.getColor(mGameActivity, R.color.board_selected));
+        setBackgroundResource(R.drawable.selected_square_frame);
     }
 
     public void setPossibleMove() {
-        setBackgroundColor(ContextCompat.getColor(mGameActivity, R.color.board_possible_move));
+        setBackgroundResource(R.drawable.possible_square_frame);
     }
 
     public void clearBackground() {
@@ -67,7 +74,7 @@ public class SquareView extends ImageView{
                 if (isValid(square) || selectedSquare != null) {
                     Move move = mGameActivity.getMoveForSquare(square);
                     if (move != null) {
-                        if (move.getMoveType() == Utils.MOVE_TYPE_PROMOTION) {
+                        if (move.getMoveType() == Move.TYPE_PROMOTION) {
                             mGameActivity.choosePromotionPiece(move);
                         } else {
                             mGameActivity.executeMove(move, true);
@@ -114,6 +121,9 @@ public class SquareView extends ImageView{
         }
 
         private boolean canClick() {
+            if (mGameActivity.getGame().isGameOver()) {
+                return false;
+            }
             switch (mGameType) {
                 case Utils.GAME_VERSUS:
                     return true;

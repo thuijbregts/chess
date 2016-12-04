@@ -7,6 +7,13 @@ import java.util.ArrayList;
 
 public class Move {
 
+    public static final int TYPE_NORMAL = 0;
+    public static final int TYPE_PASSANT = 1;
+    public static final int TYPE_CASTLING = 2;
+    public static final int TYPE_PROMOTION = 3;
+    public static final int TYPE_RESIGN = 4;
+    public static final int TYPE_DRAW = 5;
+
     private int mMoveType;
 
     private Square mSourceSquare;
@@ -31,11 +38,16 @@ public class Move {
     private boolean checkmate;
     private boolean stalemate;
 
-    private boolean surrender;
+    private boolean resign;
     private boolean whiteWon;
     private boolean blackWon;
     private Draw mDraw;
-    private Draw mAllowedDraw;
+
+    //Empty constructor for resign only
+    public Move() {
+        mMoveType = TYPE_RESIGN;
+        resign = true;
+    }
 
     public Move(int moveType, Square sourceSquare, Square destinationSquare) {
         mMoveType = moveType;
@@ -44,18 +56,23 @@ public class Move {
         mMovedPiece = sourceSquare.getPiece();
     }
 
+    public Move(Draw draw) {
+        mMoveType = TYPE_DRAW;
+        mDraw = draw;
+    }
+
     public void make() {
         switch (mMoveType) {
-            case Utils.MOVE_TYPE_NORMAL:
+            case TYPE_NORMAL:
                 makeNormalMove();
                 break;
-            case Utils.MOVE_TYPE_PROMOTION:
+            case TYPE_PROMOTION:
                 makePromotionMove();
                 break;
-            case Utils.MOVE_TYPE_PASSANT:
+            case TYPE_PASSANT:
                 makeEnPassantMove();
                 break;
-            case Utils.MOVE_TYPE_CASTLING:
+            case TYPE_CASTLING:
                 makeCastlingMove();
                 break;
         }
@@ -63,16 +80,16 @@ public class Move {
 
     public void unmake() {
         switch (mMoveType) {
-            case Utils.MOVE_TYPE_NORMAL:
+            case TYPE_NORMAL:
                 unmakeNormalMove();
                 break;
-            case Utils.MOVE_TYPE_PROMOTION:
+            case TYPE_PROMOTION:
                 unmakePromotionMove();
                 break;
-            case Utils.MOVE_TYPE_PASSANT:
+            case TYPE_PASSANT:
                 unmakeEnPassantMove();
                 break;
-            case Utils.MOVE_TYPE_CASTLING:
+            case TYPE_CASTLING:
                 unmakeCastlingMove();
                 break;
         }
@@ -138,17 +155,21 @@ public class Move {
         return blackWon;
     }
 
-    public boolean isSurrender() {
-        return surrender;
+    public boolean isResign() {
+        return resign;
+    }
+
+    public void setResign(boolean resign) {
+        this.resign = resign;
     }
 
     public void setBlackWon(boolean blackWon) {
-        surrender = true;
+        resign = true;
         this.blackWon = blackWon;
     }
 
     public void setWhiteWon(boolean whiteWon) {
-        surrender = true;
+        resign = true;
         this.whiteWon = whiteWon;
     }
 
@@ -156,17 +177,11 @@ public class Move {
         return mDraw;
     }
 
-    public Draw getAllowedDraw() {
-        return mAllowedDraw;
-    }
-
-    public void setGameStates(boolean check, boolean checkmate, boolean stalemate,
-                              Draw draw, Draw allowedDraw) {
+    public void setGameStates(boolean check, boolean checkmate, boolean stalemate, Draw draw) {
         this.check = check;
         this.checkmate = checkmate;
         this.stalemate = stalemate;
         mDraw = draw;
-        mAllowedDraw = allowedDraw;
 
         statesSet = true;
     }
@@ -290,17 +305,20 @@ public class Move {
     public String getMoveAsString() {
         String result = "";
         switch (mMoveType) {
-            case Utils.MOVE_TYPE_NORMAL:
+            case TYPE_NORMAL:
                 result = getNormalMoveAsString();
                 break;
-            case Utils.MOVE_TYPE_CASTLING:
+            case TYPE_CASTLING:
                 result = getCastlingAsString();
                 break;
-            case Utils.MOVE_TYPE_PASSANT:
+            case TYPE_PASSANT:
                 result = getEnPassantAsString();
                 break;
-            case Utils.MOVE_TYPE_PROMOTION:
+            case TYPE_PROMOTION:
                 result = getPromotionAsString();
+                break;
+            case TYPE_RESIGN:
+                return "resign";
         }
         if (checkmate) {
             result += "#";

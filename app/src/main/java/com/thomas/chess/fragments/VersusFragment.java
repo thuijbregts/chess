@@ -1,6 +1,5 @@
 package com.thomas.chess.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,11 +11,16 @@ import com.thomas.chess.R;
 import com.thomas.chess.activities.GameActivity;
 import com.thomas.chess.game.Game;
 import com.thomas.chess.game.p_children.RealPlayer;
-import com.thomas.chess.views.HistoryDialog;
+import com.thomas.chess.views.ScoreSheetDialog;
 
 public class VersusFragment extends Fragment {
 
+    private GameActivity mGameActivity;
+    private Game mGame;
     private View mView;
+
+    private Button mForceDrawButton;
+    private Button mUndoButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -27,7 +31,10 @@ public class VersusFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        mGameActivity = (GameActivity) getActivity();
+        mGame = mGameActivity.getGame();
         initializeButtons();
+        updateButtons();
     }
 
     @Override
@@ -36,35 +43,37 @@ public class VersusFragment extends Fragment {
     }
 
     private void initializeButtons() {
-        final GameActivity gameActivity = (GameActivity) getActivity();
-        final Game game = gameActivity.getGame();
-        Button showHistory = (Button) mView.findViewById(R.id.game_show_history);
-        showHistory.setOnClickListener(new View.OnClickListener() {
+        Button scoreSheet = (Button) mView.findViewById(R.id.game_show_score_sheet);
+        scoreSheet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HistoryDialog dialog = new HistoryDialog(gameActivity);
-                dialog.setMoves(game.getMoves(), game.getMoveCount());
+                ScoreSheetDialog dialog = new ScoreSheetDialog(mGameActivity);
+                dialog.setMoves(mGame.getMoves(), mGame.getMoveCount());
                 dialog.show();
             }
         });
 
-        Button undo = (Button) mView.findViewById(R.id.game_undo);
-        undo.setOnClickListener(new View.OnClickListener() {
+        mUndoButton = (Button) mView.findViewById(R.id.game_undo);
+        mUndoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (game.getCurrentPlayer() instanceof RealPlayer) {
-                    game.cancelMove();
-                    gameActivity.clearSelection();
-                    gameActivity.updateGameView();
+                if (mGame.getCurrentPlayer() instanceof RealPlayer) {
+                    mGame.cancelMove();
+                    mGameActivity.clearSelection();
+                    mGameActivity.updateGameView();
                 }
             }
         });
 
-        Button forceDraw = (Button) mView.findViewById(R.id.game_force_draw);
-        forceDraw.setOnClickListener(new View.OnClickListener() {
+        mForceDrawButton = (Button) mView.findViewById(R.id.game_force_draw);
+        mForceDrawButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                game.claimDraw();
+                if (mGame.getCurrentPlayer().canClaimDraw()) {
+                    mGame.getCurrentPlayer().claimDraw();
+                    updateButtons();
+                    mGameActivity.showGameOverDialog();
+                }
             }
         });
 
@@ -72,8 +81,15 @@ public class VersusFragment extends Fragment {
         surrender.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                game.surrender();
+                mGame.getCurrentPlayer().resign();
+                updateButtons();
+                mGameActivity.showGameOverDialog();
             }
         });
+    }
+
+    public void updateButtons() {
+        mUndoButton.setEnabled(mGame.getMoveCount() != 0);
+        mForceDrawButton.setEnabled(mGame.getCurrentPlayer().canClaimDraw());
     }
 }

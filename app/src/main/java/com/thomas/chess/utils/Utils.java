@@ -24,11 +24,6 @@ public class Utils {
     public static final int ROWS = 8;
     public static final int COLUMNS = 8;
 
-    public static final int MOVE_TYPE_NORMAL = 0;
-    public static final int MOVE_TYPE_PASSANT = 1;
-    public static final int MOVE_TYPE_CASTLING = 2;
-    public static final int MOVE_TYPE_PROMOTION = 3;
-
     public static final int PIECE_ANIMATION_DURATION = 700;
     
     public static void setImageViewForPiece(ImageView imageView, Piece piece) {
@@ -60,7 +55,7 @@ public class Utils {
                     imageView.setImageResource(R.drawable.knight_w);
                     break;
                 case Utils.BLACK:
-                    imageView.setImageResource(R.drawable.knigh_b);
+                    imageView.setImageResource(R.drawable.knight_b);
                     break;
             }
         }

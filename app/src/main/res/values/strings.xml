@@ -6,12 +6,18 @@
     <string name="menu_online">Online</string>
     <string name="menu_two_players">Two Players</string>
 
-    <!--Game View-->
-    <string name="game_history">History</string>
+    <!--Game -->
+    <string name="score_sheet">Score Sheet</string>
 
-    <!--Game States-->
-    <string name="state_checkmate">Checkmate</string>
-    <string name="state_stalemate">Stalemate</string>
-    <string name="state_check">Check</string>
-    <string name="state_draw">Draw</string>
+    <!--Game over dialog-->
+    <string name="game_over">Game Over</string>
+    <string name="game_draw">Draw</string>
+    <string name="game_resign">Resignation</string>
+    <string name="game_checkmate">Checkmate</string>
+    <string name="game_stalemate">Stalemate</string>
+    <string name="game_threefold">Threefold repetition</string>
+    <string name="game_fifty_move">Fifty-move rule</string>
+    <string name="game_seventy_five">Seventy-five-move rule</string>
+    <string name="game_no_checkmate">Insufficient material: checkmate impossible</string>
+    <string name="game_agreement">Mutual agreement</string>
 </resources>

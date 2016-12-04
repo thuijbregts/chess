@@ -14,6 +14,8 @@ public abstract class Player {
     protected ArrayList<Piece> mAlivePieces;
     protected ArrayList<Piece> mDeadPieces;
 
+    protected Draw mAllowedDraw;
+
     public Player(String name, int color) {
         mName = name;
         mColor = color;
@@ -26,6 +28,24 @@ public abstract class Player {
     }
 
     public void play() {}
+
+    public void claimDraw() {
+        Move move = new Move(mAllowedDraw);
+        mGame.executeMove(move);
+    }
+
+    public boolean canClaimDraw() {
+        return mAllowedDraw != null;
+    }
+
+    public void resign() {
+        Move move = new Move();
+        mGame.executeMove(move);
+    }
+
+    public void setAllowedDraw(Draw allowedDraw) {
+        mAllowedDraw = allowedDraw;
+    }
 
     public void setGame(Game game) {
         mGame = game;

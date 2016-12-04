@@ -19,23 +19,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class HistoryDialog extends Dialog {
+public class ScoreSheetDialog extends Dialog {
 
     private GameActivity mGameActivity;
     private List<Turn> mTurns;
 
-    public HistoryDialog(GameActivity gameActivity) {
+    public ScoreSheetDialog(GameActivity gameActivity) {
         super(gameActivity);
         mGameActivity = gameActivity;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.history_dialog);
+        setContentView(R.layout.score_sheet_dialog);
         setCancelable(true);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ListView listView = (ListView) findViewById(R.id.game_history_list);
+        ListView listView = (ListView) findViewById(R.id.game_score_sheet_list);
         MyListAdapter listAdapter = new MyListAdapter(mGameActivity, R.layout.history_list_item, mTurns);
         listView.setAdapter(listAdapter);
     }

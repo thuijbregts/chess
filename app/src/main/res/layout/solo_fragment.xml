@@ -7,11 +7,15 @@
         style="@style/FragmentButtons" />
 
     <Button
+        android:id="@+id/game_force_draw"
+        style="@style/FragmentButtons"/>
+
+    <Button
         android:id="@+id/game_undo"
         style="@style/FragmentButtons" />
 
     <Button
-        android:id="@+id/game_show_history"
+        android:id="@+id/game_show_score_sheet"
         style="@style/FragmentButtons" />
 
 </LinearLayout>

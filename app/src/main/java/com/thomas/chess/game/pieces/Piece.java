@@ -18,6 +18,8 @@ public abstract class Piece {
     protected int mMovements;
     protected Square mSquare;
 
+    protected int mValue;
+
     public Piece(int color, Square square, Game game) {
         mGame = game;
         mColor = color;
@@ -58,7 +60,7 @@ public abstract class Piece {
         while (iterator.hasNext()) {
             move = iterator.next();
 
-            if (move.getMoveType() != Utils.MOVE_TYPE_CASTLING) {
+            if (move.getMoveType() != Move.TYPE_CASTLING) {
                 move.make();
 
                 for (Piece piece : opponentPieces) {
@@ -96,5 +98,9 @@ public abstract class Piece {
             }
         }
         return false;
+    }
+
+    public int getValue() {
+        return mValue;
     }
 }

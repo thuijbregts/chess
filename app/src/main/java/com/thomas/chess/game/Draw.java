@@ -18,7 +18,7 @@ public class Draw {
     public static final int THREEFOLD = 2;
     public static final int AGREEMENT = 3;
     public static final int NO_CHECKMATE = 4;
-    public static final int SEVENTY_FIVE_MOVES = 1;
+    public static final int SEVENTY_FIVE_MOVES = 5;
 
     private int mDrawType;
 
@@ -30,11 +30,11 @@ public class Draw {
         return mDrawType;
     }
 
-    public static Draw checkAllowedDraw(Game game) {
-        if (game.getMovesWithoutPawnOrTake()/2 == 50) {
+    public static Draw getAllowedDraw(Game game) {
+        if (game.getMovesWithoutPawnOrTake() >= 100) {
             return new Draw(Draw.FIFTY_MOVES);
         }
-        if (game.getMovesWithoutPawnOrTake()/2 == 49) {
+        if (game.getMovesWithoutPawnOrTake() == 98 || game.getMovesWithoutPawnOrTake() == 99) {
             for (Piece piece : game.getCurrentPlayer().getAlivePieces()) {
                 if (!(piece instanceof Pawn)) {
                     List<Move> moves = piece.getMoves(false);
@@ -49,11 +49,14 @@ public class Draw {
         if (isThreefold(game.getBoardsForThreefold(), game.getBoardsForThreefoldCount())) {
             return new Draw(Draw.THREEFOLD);
         }
+        if (canThreeFold(game)) {
+            return new Draw(Draw.THREEFOLD);
+        }
         return null;
     }
 
     private static boolean isThreefold(List<BoardThreefold> boardThreefolds, int boardsCount) {
-        if (boardThreefolds.size() < 3) {
+        if (boardsCount < 9) {
             return false;
         }
         int lastIndex = boardsCount-1;
@@ -64,11 +67,41 @@ public class Draw {
                 sameStateCount++;
             }
         }
-        return sameStateCount >= 3;
+        return sameStateCount >= 2;
     }
 
-    public static Draw checkMandatoryDraw(Game game) {
-        if (game.getMovesWithoutPawnOrTake()/2 == 75) {
+    private static boolean canThreeFold(Game game) {
+        int boardsCount = game.getBoardsForThreefoldCount();
+        if (boardsCount < 8) {
+            return false;
+        }
+        ArrayList<BoardThreefold> boardThreefolds = new ArrayList<>();
+        for (int i = 0; i < boardsCount; i++) {
+            boardThreefolds.add(game.getBoardsForThreefold().get(i));
+        }
+        List<Move> moves;
+        for (Piece piece : game.getCurrentPlayer().getAlivePieces()) {
+            if (!(piece instanceof Pawn)) {
+                moves = piece.getMoves(false);
+                for (Move move : moves) {
+                    if (move.getDestinationSquare().getPiece() == null) {
+                        move.make();
+                        boardThreefolds.add(new BoardThreefold(game.getBoard().getSquares()));
+                        boardsCount++;
+                        move.unmake();
+                        if (isThreefold(boardThreefolds, boardsCount)) {
+                            return true;
+                        }
+                        boardThreefolds.remove(--boardsCount);
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public static Draw getMandatoryDraw(Game game) {
+        if (game.getMovesWithoutPawnOrTake() == 150 || game.getMovesWithoutPawnOrTake() == 151) {
             return new Draw(Draw.SEVENTY_FIVE_MOVES);
         }
         if (hasNoCheckmatePossible(game)) {

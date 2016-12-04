@@ -9,8 +9,11 @@ import java.util.ArrayList;
 
 public class Rook extends Piece {
 
+    public static final int VALUE = 5;
+
     public Rook(int color, Square square, Game game) {
         super(color, square, game);
+        mValue = VALUE;
     }
 
     @Override
@@ -26,12 +29,12 @@ public class Rook extends Piece {
         for (int i = row+1; i < Utils.ROWS; i++) {
             square = board[i][column];
             if (square.isEmpty()) {
-                possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
+                possibleMoves.add(new Move(Move.TYPE_NORMAL,
                         mSquare,
                         square));
             } else {
                 if (square.getPiece().getColor() != mColor) {
-                    possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
+                    possibleMoves.add(new Move(Move.TYPE_NORMAL,
                             mSquare,
                             square));
                 }
@@ -42,12 +45,12 @@ public class Rook extends Piece {
         for (int i = row-1; i >= 0; i--) {
             square = board[i][column];
             if (square.isEmpty()) {
-                possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
+                possibleMoves.add(new Move(Move.TYPE_NORMAL,
                         mSquare,
                         square));
             } else {
                 if (square.getPiece().getColor() != mColor) {
-                    possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
+                    possibleMoves.add(new Move(Move.TYPE_NORMAL,
                             mSquare,
                             square));
                 }
@@ -58,12 +61,12 @@ public class Rook extends Piece {
         for (int i = column+1; i < Utils.COLUMNS; i++) {
             square = board[row][i];
             if (square.isEmpty()) {
-                possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
+                possibleMoves.add(new Move(Move.TYPE_NORMAL,
                         mSquare,
                         square));
             } else {
                 if (square.getPiece().getColor() != mColor) {
-                    possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
+                    possibleMoves.add(new Move(Move.TYPE_NORMAL,
                             mSquare,
                             square));
                 }
@@ -74,12 +77,12 @@ public class Rook extends Piece {
         for (int i = column-1; i >= 0; i--) {
             square = board[row][i];
             if (square.isEmpty()) {
-                possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
+                possibleMoves.add(new Move(Move.TYPE_NORMAL,
                         mSquare,
                         square));
             } else {
                 if (square.getPiece().getColor() != mColor) {
-                    possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
+                    possibleMoves.add(new Move(Move.TYPE_NORMAL,
                             mSquare,
                             square));
                 }

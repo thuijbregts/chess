@@ -1,20 +1,13 @@
 package com.thomas.chess.game;
 
-import android.util.Log;
-
 import com.thomas.chess.activities.GameActivity;
-import com.thomas.chess.game.pieces.Bishop;
 import com.thomas.chess.game.pieces.King;
-import com.thomas.chess.game.pieces.Knight;
 import com.thomas.chess.game.pieces.Pawn;
 import com.thomas.chess.game.pieces.Piece;
-import com.thomas.chess.game.p_children.AIPlayer;
-import com.thomas.chess.game.p_children.RealPlayer;
 import com.thomas.chess.game.pieces.Rook;
 import com.thomas.chess.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Game {
 
@@ -33,14 +26,6 @@ public class Game {
     private int mPreviousBoardsCount;
 
     private int mMovesWithoutPawnOrTake;
-
-    private boolean check;
-    private boolean checkmate;
-    private boolean stalemate;
-    private boolean surrender;
-
-    private Draw mDraw;
-    private Draw mAllowedDraw;
 
     public Game(Player whitePlayer, Player blackPlayer, GameActivity gameActivity) {
         mGameActivity = gameActivity;
@@ -62,17 +47,20 @@ public class Game {
     }
 
     public void executeMove(Move move) {
-        updateMovesList(move);
-        move.make();
-        updatePlayersPieces(move);
-        updateFiftyMovesTracking(move);
-        updateBoardThreefoldList(move);
-        mMoveCount++;
-        updateGameStatus();
+        if (move.getMoveType() == Move.TYPE_DRAW || move.getMoveType() == Move.TYPE_RESIGN) {
+            updateMovesList(move);
+        } else {
+            updateMovesListWithCheck(move);
+            move.make();
+            updatePlayersPieces(move);
+            updateFiftyMovesTracking(move);
+            updateBoardThreefoldList(move);
+            updateGameStatus(move);
+        }
         updateCurrentPlayer();
     }
 
-    private void updateMovesList(Move move) {
+    private void updateMovesListWithCheck(Move move) {
         if (mMoveCount == mMoves.size()) {
             mMoves.add(move);
             move.checkAmbiguousMove(mCurrentPlayer);
@@ -81,10 +69,21 @@ public class Game {
             mMoves.subList(mMoveCount +1, mMoves.size()).clear();
             move.checkAmbiguousMove(mCurrentPlayer);
         }
+        mMoveCount++;
+    }
+
+    private void updateMovesList(Move move) {
+        if (mMoveCount == mMoves.size()) {
+            mMoves.add(move);
+        } else if (!mMoves.get(mMoveCount).equals(move)) {
+            mMoves.set(mMoveCount, move);
+            mMoves.subList(mMoveCount +1, mMoves.size()).clear();
+        }
+        mMoveCount++;
     }
 
     private void updatePlayersPieces(Move move) {
-        if (move.getMoveType() == Utils.MOVE_TYPE_PROMOTION) {
+        if (move.getMoveType() == Move.TYPE_PROMOTION) {
             ArrayList<Piece> alivePieces = mCurrentPlayer.getAlivePieces();
             alivePieces.set(alivePieces.indexOf(move.getPromotedPawn()), move.getPromotedPiece());
         }
@@ -127,50 +126,46 @@ public class Game {
         mBoardsForThreefoldCount++;
     }
 
-    private void updateGameStatus() {
-        Move lastMove = mMoves.get(mMoveCount - 1);
-        if (!lastMove.isStatesSet()) {
-            check = mCurrentPlayer.hasCheck();
+    private void updateGameStatus(Move move) {
+        if (!move.isStatesSet()) {
+            boolean check = mCurrentPlayer.hasCheck();
             boolean hasNoLegalMoves = getOpponent(mCurrentPlayer.getColor()).hasNoLegalMove();
-            checkmate = hasNoLegalMoves && check;
-            stalemate = hasNoLegalMoves && !check;
+            boolean checkmate = hasNoLegalMoves && check;
+            boolean stalemate = hasNoLegalMoves && !check;
+            Draw draw;
             if (stalemate) {
-                mDraw = new Draw(Draw.STALEMATE);
+                draw = new Draw(Draw.STALEMATE);
             } else {
-                mDraw = checkmate ? null : Draw.checkMandatoryDraw(this);
-                mAllowedDraw = checkmate ? null : Draw.checkAllowedDraw(this);
+                draw = checkmate ? null : Draw.getMandatoryDraw(this);
             }
-            lastMove.setGameStates(check, checkmate, stalemate, mDraw, mAllowedDraw);
-        } else {
-            check = lastMove.isCheck();
-            checkmate = lastMove.isCheckmate();
-            stalemate = lastMove.isStalemate();
-            mDraw = lastMove.getDraw();
-            mAllowedDraw = lastMove.getAllowedDraw();
+            move.setGameStates(check, checkmate, stalemate, draw);
         }
     }
 
     private void updateCurrentPlayer() {
         mCurrentPlayer = (mWhitePlayer.equals(mCurrentPlayer) ? mBlackPlayer : mWhitePlayer);
+        mCurrentPlayer.setAllowedDraw(isGameOver() ? null : Draw.getAllowedDraw(this));
     }
 
     public void cancelMove() {
         if (mMoveCount > 0) {
-            Move move = mMoves.get(mMoveCount -1);
-            resumePreviousPlayerPieces(move);
-            move.unmake();
-            if (mMovesWithoutPawnOrTake != 0) {
-                mMovesWithoutPawnOrTake--;
+            Move move = mMoves.get(mMoveCount - 1);
+            if (!(move.getMoveType() == Move.TYPE_DRAW || move.getMoveType() == Move.TYPE_RESIGN)) {
+                resumePreviousPlayerPieces(move);
+                move.unmake();
+                if (mMovesWithoutPawnOrTake != 0) {
+                    mMovesWithoutPawnOrTake--;
+                }
+                mBoardsForThreefoldCount = mBoardsForThreefoldCount == 0 ? mPreviousBoardsCount
+                        : mBoardsForThreefoldCount-1;
             }
-            mBoardsForThreefoldCount = mPreviousBoardsCount;
             mMoveCount--;
-            resumePreviousGameStatus();
             updateCurrentPlayer();
         }
     }
 
     private void resumePreviousPlayerPieces(Move move) {
-        if (move.getMoveType() == Utils.MOVE_TYPE_PROMOTION) {
+        if (move.getMoveType() == Move.TYPE_PROMOTION) {
             ArrayList<Piece> alivePieces = mCurrentPlayer.getAlivePieces();
             alivePieces.set(alivePieces.indexOf(move.getPromotedPiece()), move.getPromotedPawn());
         }
@@ -182,43 +177,21 @@ public class Game {
         }
     }
 
-    private void resumePreviousGameStatus() {
-        checkmate = stalemate = false;
-        mDraw = null;
-        if (mMoveCount == 0) {
-            check = false;
-        } else {
-            Move move = mMoves.get(mMoveCount-1);
-            check = move.isCheck();
-            mAllowedDraw = move.getAllowedDraw();
-        }
-    }
-
     public boolean isGameOver() {
-        return checkmate || stalemate || mDraw != null || surrender;
-    }
-
-    public void surrender() {
-        surrender = true;
-        Move move = mMoves.get(mMoveCount-1);
-        switch (mCurrentPlayer.getColor()) {
-            case Utils.WHITE:
-                move.setBlackWon(true);
-                break;
-            case Utils.BLACK:
-                move.setWhiteWon(true);
-                break;
+        Move lastMove = getLastMove();
+        if (lastMove == null) {
+            return false;
         }
-    }
-
-    public void claimDraw() {
-        if (mAllowedDraw != null) {
-            mDraw = mAllowedDraw;
-        }
+        return lastMove.isCheckmate() || lastMove.isStalemate()
+                || lastMove.getDraw() != null || lastMove.isResign();
     }
 
     public Player getOpponent(int color) {
         return color == Utils.WHITE ? mBlackPlayer : mWhitePlayer;
+    }
+
+    public Move getLastMove() {
+        return mMoveCount > 0 ? mMoves.get(mMoveCount-1) : null;
     }
 
     public ArrayList<BoardThreefold> getBoardsForThreefold() {
@@ -251,18 +224,6 @@ public class Game {
 
     public ArrayList<Move> getMoves() {
         return mMoves;
-    }
-
-    public boolean isCheck() {
-        return check;
-    }
-
-    public boolean isCheckmate() {
-        return checkmate;
-    }
-
-    public boolean isStalemate() {
-        return stalemate;
     }
 
     public GameActivity getGameActivity() {

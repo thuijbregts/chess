@@ -8,22 +8,18 @@
 
     <ImageView
         android:id="@+id/promotion_queen"
-        style="@style/PromotionDialog"
-        android:src="@drawable/queen_b"/>
+        style="@style/PromotionDialog" />
 
     <ImageView
         android:id="@+id/promotion_rook"
-        style="@style/PromotionDialog"
-        android:src="@drawable/rook_b"/>
+        style="@style/PromotionDialog" />
 
     <ImageView
         android:id="@+id/promotion_bishop"
-        style="@style/PromotionDialog"
-        android:src="@drawable/bishop_b"/>
+        style="@style/PromotionDialog" />
 
     <ImageView
         android:id="@+id/promotion_knight"
-        style="@style/PromotionDialog"
-        android:src="@drawable/knigh_b"/>
+        style="@style/PromotionDialog" />
 
 </LinearLayout>

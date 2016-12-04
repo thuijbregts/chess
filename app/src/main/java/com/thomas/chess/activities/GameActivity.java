@@ -22,6 +22,7 @@ import com.thomas.chess.game.Square;
 import com.thomas.chess.game.p_children.AIPlayer;
 import com.thomas.chess.game.p_children.RealPlayer;
 import com.thomas.chess.utils.Utils;
+import com.thomas.chess.views.GameOverDialog;
 import com.thomas.chess.views.PromotionDialog;
 import com.thomas.chess.views.SquareView;
 import com.thomas.chess.game.pieces.Piece;
@@ -31,8 +32,11 @@ import java.util.ArrayList;
 public class GameActivity extends FragmentActivity {
 
     private LinearLayout mGameLayout;
+    private Fragment mFragment;
+
     private Game mGame;
     private int mGameType;
+
     private SquareView[][] mSquareViews;
     private SquareView mSelectedSquareView;
 
@@ -60,22 +64,21 @@ public class GameActivity extends FragmentActivity {
         mGameLayout = (LinearLayout) findViewById(R.id.game_layout);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment;
         switch (gameType) {
             case Utils.GAME_SOLO:
-                fragment = new SoloFragment();
+                mFragment = new SoloFragment();
                 break;
             case Utils.GAME_REVIEW:
-                fragment = new HistoryFragment();
+                mFragment = new HistoryFragment();
                 break;
             case Utils.GAME_VERSUS:
-                fragment = new VersusFragment();
+                mFragment = new VersusFragment();
                 break;
             default:
-                fragment = new OnlineFragment();
+                mFragment = new OnlineFragment();
                 break;
         }
-        fragmentManager.beginTransaction().replace(R.id.frame_content, fragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.frame_content, mFragment).commit();
     }
 
     private void initializeGame(int gameType) {
@@ -128,7 +131,7 @@ public class GameActivity extends FragmentActivity {
                 squareParams.weight = 1;
                 squareView.setLayoutParams(squareParams);
 
-                squareView.updateImage();
+                squareView.update();
                 mSquareViews[i][j] = squareView;
 
                 rowLayout.addView(squareView);
@@ -145,16 +148,25 @@ public class GameActivity extends FragmentActivity {
         } else {
             updateGameView();
         }
+        mAnalyzedSquares.clear();
     }
 
     public void updateGameView() {
         updatePlayerContainers();
-        mAnalyzedSquares.clear();
+        updateFragmentButtons();
 
         for (SquareView[] line : mSquareViews) {
             for (SquareView squareView : line) {
-                squareView.updateImage();
+                squareView.update();
             }
+        }
+
+        Move lastMove = getGame().getLastMove();
+        if (lastMove != null) {
+            Square src = lastMove.getSourceSquare();
+            Square dest = lastMove.getDestinationSquare();
+            mSquareViews[src.getRow()][src.getColumn()].setLastMove();
+            mSquareViews[dest.getRow()][dest.getColumn()].setLastMove();
         }
     }
 
@@ -176,6 +188,23 @@ public class GameActivity extends FragmentActivity {
         }
     }
 
+    private void updateFragmentButtons() {
+        switch (mGameType) {
+            case Utils.GAME_SOLO:
+                ((SoloFragment)mFragment).updateButtons();
+                break;
+            case Utils.GAME_REVIEW:
+                ((HistoryFragment)mFragment).updateButtons();
+                break;
+            case Utils.GAME_VERSUS:
+                ((VersusFragment)mFragment).updateButtons();
+                break;
+            default:
+                ((OnlineFragment)mFragment).updateButtons();
+                break;
+        }
+    }
+
     public void clearSelection() {
         if (mSelectedSquareView != null) {
             mSelectedSquareView.clearBackground();
@@ -191,8 +220,7 @@ public class GameActivity extends FragmentActivity {
     }
 
     public void choosePromotionPiece(Move move) {
-        PromotionDialog dialog = new PromotionDialog(this);
-        dialog.setMove(move);
+        PromotionDialog dialog = new PromotionDialog(this, move);
         dialog.show();
     }
 
@@ -249,14 +277,15 @@ public class GameActivity extends FragmentActivity {
         return null;
     }
 
-    private void showEndDialog() {
-
+    public void showGameOverDialog() {
+        GameOverDialog dialog = new GameOverDialog(this, getGame().getLastMove());
+        dialog.show();
     }
 
     public void animateMove(Move move) {
         animating = true;
         switch (move.getMoveType()) {
-            case Utils.MOVE_TYPE_CASTLING:
+            case Move.TYPE_CASTLING:
                 animateCastling(move);
                 break;
             default:
@@ -351,7 +380,7 @@ public class GameActivity extends FragmentActivity {
             if (!mGame.isGameOver()) {
                 mGame.getCurrentPlayer().play();
             } else {
-                showEndDialog();
+                showGameOverDialog();
             }
         }
 

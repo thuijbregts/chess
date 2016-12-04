@@ -22,6 +22,26 @@ public class AIPlayer extends Player {
             allMoves.addAll(piece.getMoves(false));
         }
 
-        mGame.getGameActivity().executeMove(allMoves.get((int)Math.floor(Math.random()*allMoves.size())), true);
+        Move bestMove = null;
+        for (Move move : allMoves) {
+            if (!move.getDestinationSquare().isEmpty() && move.getDestinationSquare().getPiece().getColor() != mColor) {
+                if (bestMove == null) {
+                    bestMove = move;
+                }
+                else {
+                    Piece piece = move.getDestinationSquare().getPiece();
+                    Piece bestPiece = bestMove.getDestinationSquare().getPiece();
+                    if (piece.getValue() > bestPiece.getValue()) {
+                        bestMove = move;
+                    }
+                }
+            }
+        }
+
+        if (bestMove != null) {
+            mGame.getGameActivity().executeMove(bestMove, true);
+        } else {
+            mGame.getGameActivity().executeMove(allMoves.get((int)Math.floor(Math.random()*allMoves.size())), true);
+        }
     }
 }

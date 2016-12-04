@@ -10,8 +10,11 @@ import java.util.ArrayList;
 
 public class Pawn extends Piece {
 
+    public static final int VALUE = 1;
+
     public Pawn(int color, Square square, Game game) {
         super(color, square, game);
+        mValue = VALUE;
     }
 
     @Override
@@ -32,7 +35,7 @@ public class Pawn extends Piece {
 
         if (row < Utils.ROWS-1) {
             if (board[row + 1][column].isEmpty()) {
-                possibleMoves.add(new Move((row == Utils.ROWS-2 ?Utils.MOVE_TYPE_PROMOTION:Utils.MOVE_TYPE_NORMAL),
+                possibleMoves.add(new Move((row == Utils.ROWS-2 ?Move.TYPE_PROMOTION:Move.TYPE_NORMAL),
                         mSquare,
                         board[row + 1][column]));
             }
@@ -40,7 +43,7 @@ public class Pawn extends Piece {
             if (column > 0) {
                 square = board[row + 1][column - 1];
                 if (!square.isEmpty() && square.getPiece().getColor() != mColor) {
-                    possibleMoves.add(new Move((row == Utils.ROWS-2?Utils.MOVE_TYPE_PROMOTION:Utils.MOVE_TYPE_NORMAL),
+                    possibleMoves.add(new Move((row == Utils.ROWS-2?Move.TYPE_PROMOTION:Move.TYPE_NORMAL),
                             mSquare,
                             square));
                 }
@@ -48,7 +51,7 @@ public class Pawn extends Piece {
             if (column < Utils.COLUMNS - 1) {
                 square = board[row + 1][column + 1];
                 if (!square.isEmpty() && square.getPiece().getColor() != mColor) {
-                    possibleMoves.add(new Move((row == Utils.ROWS-2?Utils.MOVE_TYPE_PROMOTION:Utils.MOVE_TYPE_NORMAL),
+                    possibleMoves.add(new Move((row == Utils.ROWS-2?Move.TYPE_PROMOTION:Move.TYPE_NORMAL),
                             mSquare,
                             square));
                 }
@@ -56,7 +59,7 @@ public class Pawn extends Piece {
         }
         if (mMovements == 0) {
             if (board[row+2][column].isEmpty() && board[row+1][column].isEmpty()) {
-                possibleMoves.add(new Move(Utils.MOVE_TYPE_NORMAL,
+                possibleMoves.add(new Move(Move.TYPE_NORMAL,
                         mSquare,
                         board[row+2][column]));
             }
@@ -85,7 +88,7 @@ public class Pawn extends Piece {
             if (!square.isEmpty() && piece.getColor() != mColor
                     && piece instanceof Pawn && piece.getMovements() == 1
                     && piece.equals(lastMove.getMovedPiece())) {
-                move = new Move(Utils.MOVE_TYPE_PASSANT,
+                move = new Move(Move.TYPE_PASSANT,
                         mSquare,
                         board[row+1][column-1]);
                 move.setEnPassant(square);
@@ -98,7 +101,7 @@ public class Pawn extends Piece {
             if (!square.isEmpty() && piece.getColor() != mColor
                     && piece instanceof Pawn && piece.getMovements() == 1
                     && piece.equals(lastMove.getMovedPiece())) {
-                move = new Move(Utils.MOVE_TYPE_PASSANT,
+                move = new Move(Move.TYPE_PASSANT,
                         mSquare,
                         board[row + 1][column + 1]);
                 move.setEnPassant(square);
