@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:background="@color/main_background"
-    tools:context=".activities.MainActivity">
+    tools:context=".gui.activities.MainActivity">
 
     <LinearLayout
         style="@style/PlayerPieces"
