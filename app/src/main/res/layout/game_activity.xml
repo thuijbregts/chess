@@ -9,102 +9,210 @@
 
     <LinearLayout
         style="@style/PlayerPieces"
-        android:layout_marginBottom="20dp">
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/pieces_container_top">
         <TextView
-            android:id="@+id/player_pieces_header_black"
+            android:id="@+id/pieces_header_black"
             style="@style/PlayerPiecesHeader"/>
 
+        <View
+            style="@style/PlayerPiecesSeparator"/>
+
         <LinearLayout
-            android:id="@+id/player_pieces_container_black"
+            android:id="@+id/pieces_container_black"
             style="@style/PlayerPiecesContainer">
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
+            <LinearLayout
+                style="@style/DeadPieceLayout">
+                <ImageView
+                    style="@style/PlayerPiecesImage"
+                    android:background="@drawable/pawn_b"/>
+                <TextView
+                    style="@style/PlayerPiecesText"
+                    android:text="x"/>
+                <TextView
+                    android:id="@+id/pieces_black_pawn"
+                    style="@style/PlayerPiecesText"/>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/DeadPieceLayout">
+                <ImageView
+                    style="@style/PlayerPiecesImage"
+                    android:background="@drawable/knight_b"/>
+                <TextView
+                    style="@style/PlayerPiecesText"
+                    android:textSize="12sp"
+                    android:text="x"/>
+                <TextView
+                    android:id="@+id/pieces_black_knight"
+                    style="@style/PlayerPiecesText"/>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/DeadPieceLayout">
+                <ImageView
+                    style="@style/PlayerPiecesImage"
+                    android:background="@drawable/bishop_b"/>
+                <TextView
+                    style="@style/PlayerPiecesText"
+                    android:text="x"/>
+                <TextView
+                    android:id="@+id/pieces_black_bishop"
+                    style="@style/PlayerPiecesText"/>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/DeadPieceLayout">
+                <ImageView
+                    style="@style/PlayerPiecesImage"
+                    android:background="@drawable/rook_b"/>
+                <TextView
+                    style="@style/PlayerPiecesText"
+                    android:text="x"/>
+                <TextView
+                    android:id="@+id/pieces_black_rook"
+                    style="@style/PlayerPiecesText"/>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/DeadPieceLayout">
+                <ImageView
+                    style="@style/PlayerPiecesImage"
+                    android:background="@drawable/queen_b"/>
+                <TextView
+                    style="@style/PlayerPiecesText"
+                    android:text="x"/>
+                <TextView
+                    android:id="@+id/pieces_black_queen"
+                    style="@style/PlayerPiecesText"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/black_king_container"
+                style="@style/KingLayout">
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:background="@drawable/king_b"/>
+                <TextView
+                    android:id="@+id/pieces_black_king"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/game_layout"
         android:layout_width="344dp"
         android:layout_height="344dp"
-        android:clipChildren="false"
-        android:background="@drawable/board"
-        android:orientation="vertical">
-
-    </LinearLayout>
-
-    <LinearLayout
-        style="@style/PlayerPieces">
+        android:background="@color/player_container_background"
+        android:gravity="center">
+        <LinearLayout
+            android:id="@+id/game_layout"
+            android:layout_width="328dp"
+            android:layout_height="328dp"
+            android:clipChildren="false"
+            android:background="@drawable/board"
+            android:orientation="vertical"/>
     </LinearLayout>
 
     <LinearLayout
         style="@style/PlayerPieces"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="5dp"
+        android:background="@drawable/pieces_container_bottom">
         <TextView
             android:id="@+id/player_pieces_header_white"
             style="@style/PlayerPiecesHeader" />
 
+        <View
+            style="@style/PlayerPiecesSeparator"/>
+
         <LinearLayout
-            android:id="@+id/player_pieces_container_white"
+            android:id="@+id/pieces_container_white"
             style="@style/PlayerPiecesContainer">
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
-            <ImageView
-                style="@style/PlayerPiecesImage"/>
+            <LinearLayout
+                style="@style/DeadPieceLayout">
+                <ImageView
+                    style="@style/PlayerPiecesImage"
+                    android:background="@drawable/pawn_w"/>
+                <TextView
+                    style="@style/PlayerPiecesText"
+                    android:text="x"/>
+                <TextView
+                    android:id="@+id/pieces_white_pawn"
+                    style="@style/PlayerPiecesText"/>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/DeadPieceLayout">
+                <ImageView
+                    style="@style/PlayerPiecesImage"
+                    android:background="@drawable/knight_w"/>
+                <TextView
+                    style="@style/PlayerPiecesText"
+                    android:textSize="12sp"
+                    android:text="x"/>
+                <TextView
+                    android:id="@+id/pieces_white_knight"
+                    style="@style/PlayerPiecesText"/>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/DeadPieceLayout">
+                <ImageView
+                    style="@style/PlayerPiecesImage"
+                    android:background="@drawable/bishop_w"/>
+                <TextView
+                    style="@style/PlayerPiecesText"
+                    android:text="x"/>
+                <TextView
+                    android:id="@+id/pieces_white_bishop"
+                    style="@style/PlayerPiecesText"/>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/DeadPieceLayout">
+                <ImageView
+                    style="@style/PlayerPiecesImage"
+                    android:background="@drawable/rook_w"/>
+                <TextView
+                    style="@style/PlayerPiecesText"
+                    android:text="x"/>
+                <TextView
+                    android:id="@+id/pieces_white_rook"
+                    style="@style/PlayerPiecesText"/>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/DeadPieceLayout">
+                <ImageView
+                    style="@style/PlayerPiecesImage"
+                    android:background="@drawable/queen_w"/>
+                <TextView
+                    style="@style/PlayerPiecesText"
+                    android:text="x"/>
+                <TextView
+                    android:id="@+id/pieces_white_queen"
+                    style="@style/PlayerPiecesText"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/white_king_container"
+                style="@style/KingLayout">
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:background="@drawable/king_w"/>
+                <TextView
+                    android:id="@+id/pieces_white_king"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>

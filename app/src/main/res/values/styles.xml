@@ -33,26 +33,60 @@
     </style>
 
     <style name="PlayerPiecesHeader">
-        <item name="android:layout_width">344dp</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">18sp</item>
-        <item name="android:background">@color/player_header_background</item>
         <item name="android:gravity">center</item>
     </style>
 
+    <style name="PlayerPiecesSeparator">
+        <item name="android:layout_width">140dp</item>
+        <item name="android:layout_height">1px</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:background">@color/player_header_background</item>
+        <item name="android:layout_marginTop">12dp</item>
+    </style>
+
     <style name="PlayerPiecesContainer">
-        <item name="android:layout_width">344dp</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@color/player_container_background</item>
         <item name="android:orientation">horizontal</item>
         <item name="android:paddingTop">4dp</item>
         <item name="android:paddingBottom">4dp</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginRight">10dp</item>
+    </style>
+
+    <style name="DeadPieceLayout">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">bottom</item>
+        <item name="android:layout_marginBottom">5dp</item>
+    </style>
+
+    <style name="KingLayout">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:gravity">right</item>
+        <item name="android:layout_marginRight">8dp</item>
     </style>
 
     <style name="PlayerPiecesImage">
-        <item name="android:layout_width">21dp</item>
-        <item name="android:layout_height">21dp</item>
-        <item name="android:layout_marginLeft">2dp</item>
+        <item name="android:layout_width">28dp</item>
+        <item name="android:layout_height">28dp</item>
+        <item name="android:layout_marginLeft">4dp</item>
+        <item name="android:layout_marginRight">2dp</item>
+    </style>
+
+    <style name="PlayerPiecesText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_marginLeft">1dp</item>
+        <item name="android:text">0</item>
     </style>
 
     <!--Game activity fragment-->
@@ -67,8 +101,8 @@
     </style>
 
     <style name="FragmentButtons">
-        <item name="android:layout_width">48dp</item>
-        <item name="android:layout_height">48dp</item>
-        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_marginRight">10dp</item>
     </style>
 </resources>

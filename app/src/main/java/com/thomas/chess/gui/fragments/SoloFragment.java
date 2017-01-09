@@ -77,9 +77,7 @@ public class SoloFragment extends Fragment {
                     mGameActivity.updateGameView();
                     mGameActivity.play();
                 } else if (mGame.isGameOver()) {
-                    mGame.unmakeMove();
-                    mGameActivity.updateGameView();
-                    mGameActivity.play();
+                    mGameActivity.unmakeMove();
                 }
             }
         });

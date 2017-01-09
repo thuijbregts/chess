@@ -57,10 +57,7 @@ public class VersusFragment extends Fragment {
         mUndoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mGame.unmakeMove();
-                mGameActivity.clearSelection();
-                mGameActivity.updateGameView();
-                mGameActivity.play();
+                mGameActivity.unmakeMove();
             }
         });
 

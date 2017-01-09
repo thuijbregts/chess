@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="main_background">#291002</color>
+    <color name="main_background">#8ba3b8</color>
 
     <!--Board colors-->
     <color name="board_selected">#AA333388</color>
@@ -13,4 +13,9 @@
 
     <!--Moves history dialog-->
     <color name="dialog_header">#3f1708</color>
+
+    <!--Buttons-->
+    <color name="button_disabled">#584c3e</color>
+    <color name="button_pressed">#d69048</color>
+    <color name="button_default">#a36f4a</color>
 </resources>

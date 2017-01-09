@@ -4,18 +4,22 @@
 
     <Button
         android:id="@+id/game_surrender"
-        style="@style/FragmentButtons" />
+        style="@style/FragmentButtons"
+        android:background="@drawable/surrender"/>
 
     <Button
         android:id="@+id/game_force_draw"
-        style="@style/FragmentButtons"/>
+        style="@style/FragmentButtons"
+        android:background="@drawable/draw"/>
 
     <Button
         android:id="@+id/game_undo"
-        style="@style/FragmentButtons" />
+        style="@style/FragmentButtons"
+        android:background="@drawable/undo"/>
 
     <Button
         android:id="@+id/game_show_score_sheet"
-        style="@style/FragmentButtons" />
+        style="@style/FragmentButtons"
+        android:background="@drawable/sheet"/>
 
 </LinearLayout>

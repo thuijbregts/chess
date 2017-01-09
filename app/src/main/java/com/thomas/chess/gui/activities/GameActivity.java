@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.view.View;
 import android.view.animation.Animation;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -23,8 +23,6 @@ import com.thomas.chess.gui.views.SquareView;
 import com.thomas.chess.engine.chess120.*;
 import com.thomas.chess.engine.search.*;
 
-import java.util.ArrayList;
-
 public class GameActivity extends FragmentActivity {
 
     private LinearLayout mGameLayout;
@@ -39,8 +37,21 @@ public class GameActivity extends FragmentActivity {
     private SquareView[][] mSquareViews;
     private SquareView mSelectedSquareView;
 
-    private ArrayList<ImageView> mBlackDeadPieces;
-    private ArrayList<ImageView> mWhiteDeadPieces;
+    private TextView mBlackPawns;
+    private TextView mBlackKnights;
+    private TextView mBlackBishops;
+    private TextView mBlackRooks;
+    private TextView mBlackQueens;
+    private TextView mBlackKing;
+    private LinearLayout mBlackKingContainer;
+
+    private TextView mWhitePawns;
+    private TextView mWhiteKnights;
+    private TextView mWhiteBishops;
+    private TextView mWhiteRooks;
+    private TextView mWhiteQueens;
+    private TextView mWhiteKing;
+    private LinearLayout mWhiteKingContainer;
 
     private MoveArray mMoves;
 
@@ -56,8 +67,15 @@ public class GameActivity extends FragmentActivity {
         Bundle extras = getIntent().getExtras();
         int gameType = extras.getInt(Utils.INTENT_GAME_TYPE);
 
-        initializeViews(gameType);
         initializeGame(gameType);
+        initializeViews(gameType);
+
+        play();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     private void initializeViews(int gameType) {
@@ -79,6 +97,9 @@ public class GameActivity extends FragmentActivity {
                 break;
         }
         fragmentManager.beginTransaction().replace(R.id.frame_content, mFragment).commit();
+
+        setUpPlayerContainers();
+        setUpBoardViews();
     }
 
     private void initializeGame(int gameType) {
@@ -89,28 +110,32 @@ public class GameActivity extends FragmentActivity {
                 mEngine = new Engine(mGame);
                 break;
         }
-        setUpPlayerContainers();
-        setUpBoardViews();
-
-        play();
     }
 
     private void setUpPlayerContainers() {
-        TextView blackName = (TextView) findViewById(R.id.player_pieces_header_black);
+        TextView blackName = (TextView) findViewById(R.id.pieces_header_black);
         TextView whiteName = (TextView) findViewById(R.id.player_pieces_header_white);
 
         whiteName.setText("White");
         blackName.setText("Black");
 
-        LinearLayout blackContainer = (LinearLayout) findViewById(R.id.player_pieces_container_black);
-        LinearLayout whiteContainer = (LinearLayout) findViewById(R.id.player_pieces_container_white);
+        mBlackPawns = (TextView) findViewById(R.id.pieces_black_pawn);
+        mBlackKnights = (TextView) findViewById(R.id.pieces_black_knight);
+        mBlackBishops = (TextView) findViewById(R.id.pieces_black_bishop);
+        mBlackRooks = (TextView) findViewById(R.id.pieces_black_rook);
+        mBlackQueens = (TextView) findViewById(R.id.pieces_black_queen);
+        mBlackKing = (TextView) findViewById(R.id.pieces_black_king);
+        mBlackKingContainer = (LinearLayout) findViewById(R.id.black_king_container);
 
-        mBlackDeadPieces = new ArrayList<>();
-        mWhiteDeadPieces = new ArrayList<>();
-        for (int i = 0; i < blackContainer.getChildCount(); i++) {
-            mBlackDeadPieces.add((ImageView) blackContainer.getChildAt(i));
-            mWhiteDeadPieces.add((ImageView) whiteContainer.getChildAt(i));
-        }
+        mWhitePawns = (TextView) findViewById(R.id.pieces_white_pawn);
+        mWhiteKnights = (TextView) findViewById(R.id.pieces_white_knight);
+        mWhiteBishops = (TextView) findViewById(R.id.pieces_white_bishop);
+        mWhiteRooks = (TextView) findViewById(R.id.pieces_white_rook);
+        mWhiteQueens = (TextView) findViewById(R.id.pieces_white_queen);
+        mWhiteKing = (TextView) findViewById(R.id.pieces_white_king);
+        mWhiteKingContainer = (LinearLayout) findViewById(R.id.white_king_container);
+
+        updatePlayerContainers(mGame.getLastMove());
     }
 
     private void setUpBoardViews() {
@@ -187,13 +212,22 @@ public class GameActivity extends FragmentActivity {
         animateMove(mv);
     }
 
+    public void unmakeMove() {
+        mGame.unmakeMove();
+        clearSelection();
+        updateGameView();
+        play();
+    }
+
     public void updateMoves(int count) {
         mMoveLine = mMoveLine.substring(0, mMoveLine.length() - (count * 4));
         mEngine.useBook();
     }
 
     public void updateGameView() {
-        updatePlayerContainers();
+        Move lastMove = mGame.getLastMove();
+
+        updatePlayerContainers(lastMove);
         updateFragmentButtons();
 
         for (SquareView[] line : mSquareViews) {
@@ -203,7 +237,6 @@ public class GameActivity extends FragmentActivity {
         }
 
         if (mGame.getMoveCount() > 0) {
-            Move lastMove = mGame.getLastMove();
             int src = lastMove.getSourceSquare();
             int srcRank = Definitions.RANKS[src];
             int srcFile = Definitions.FILES[src];
@@ -215,10 +248,91 @@ public class GameActivity extends FragmentActivity {
         }
     }
 
-    private void updatePlayerContainers() {
-        int[] whitePieces = mGame.getPieces()[0];
+    private void updatePlayerContainers(Move lastMove) {
+        int[][] pieces = mGame.getPieces();
+        int piece, type;
+        int wp, wn, wb, wr, wq, bp, bn, bb, br, bq;
+        wp = wn = wb = wr = wq = bp = bn = bb = br = bq = 0;
+        for (int i = 0; i < 15; i++) {
+            piece = pieces[Game.WHITE][i];
+            if ((piece & Piece.DEAD_FLAG) != 0) {
+                type = piece >> Piece.TYPE_SHIFT & Piece.TYPE_MASK;
+                switch (type) {
+                    case Definitions.PAWN:
+                        wp++;
+                        break;
+                    case Definitions.KNIGHT:
+                        wn++;
+                        break;
+                    case Definitions.BISHOP:
+                        wb++;
+                        break;
+                    case Definitions.ROOK:
+                        wr++;
+                        break;
+                    case Definitions.QUEEN:
+                        wq++;
+                }
+            }
 
-        int[] blackPieces = mGame.getPieces()[1];
+            piece = pieces[Game.BLACK][i];
+            if ((piece & Piece.DEAD_FLAG) != 0) {
+                type = piece >> Piece.TYPE_SHIFT & Piece.TYPE_MASK;
+                switch (type) {
+                    case Definitions.PAWN:
+                        bp++;
+                        break;
+                    case Definitions.KNIGHT:
+                        bn++;
+                        break;
+                    case Definitions.BISHOP:
+                        bb++;
+                        break;
+                    case Definitions.ROOK:
+                        br++;
+                        break;
+                    case Definitions.QUEEN:
+                        bq++;
+                }
+            }
+        }
+
+        mWhitePawns.setText("" + wp);
+        mWhiteKnights.setText("" + wn);
+        mWhiteBishops.setText("" + wb);
+        mWhiteRooks.setText("" + wr);
+        mWhiteQueens.setText("" + wq);
+
+        mBlackPawns.setText("" + bp);
+        mBlackKnights.setText("" + bn);
+        mBlackBishops.setText("" + bb);
+        mBlackRooks.setText("" + br);
+        mBlackQueens.setText("" + bq);
+
+        int side = mGame.getCurrentSide();
+        if (side == Game.WHITE) {
+            mWhiteKingContainer.setVisibility(View.VISIBLE);
+            mBlackKingContainer.setVisibility(View.INVISIBLE);
+
+            if (lastMove.isCheckmate()) {
+                mWhiteKing.setText("MATE");
+            } else if (lastMove.isCheck()) {
+                mWhiteKing.setText("CHECK");
+            } else {
+                mWhiteKing.setText("SAFE");
+            }
+        } else {
+            mWhiteKingContainer.setVisibility(View.INVISIBLE);
+            mBlackKingContainer.setVisibility(View.VISIBLE);
+
+            if (lastMove.isCheckmate()) {
+                mBlackKing.setText("MATE");
+            } else if (lastMove.isCheck()) {
+                mBlackKing.setText("CHECK");
+            } else {
+                mBlackKing.setText("SAFE");
+            }
+        }
     }
 
     private void updateFragmentButtons() {

@@ -321,6 +321,7 @@ public class Game {
         mMoves[mMoveIndex].setResign(true);
         mMoveIndex++;
         mMoveCount++;
+		mPositionsCount++;
         changeSide();
     }
 
